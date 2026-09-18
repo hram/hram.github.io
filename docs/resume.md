@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Резюме - Head of Mobile
+description: "Резюме Евгения Храмова на позицию Head of Mobile — построение мобильной разработки как инженерной системы: команда, архитектура, CI/CD, релизы, observability."
 nav_order: 2
 ---
 

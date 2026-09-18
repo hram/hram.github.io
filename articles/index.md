@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Статьи
+description: Статьи Евгения Храмова — истории о мобильной разработке, инженерных решениях и работе с coding agents.
 nav_order: 7
 permalink: /articles/
 ---

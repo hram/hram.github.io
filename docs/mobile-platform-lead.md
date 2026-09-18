@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Резюме - Mobile Platform Lead
+description: Резюме Евгения Храмова на позицию Mobile Platform Lead — внутренняя мобильная платформа, CI/CD, App Store, feature toggle, hotfix delivery, observability.
 nav_order: 3
 ---
 

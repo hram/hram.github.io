@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Карьерный фокус
+description: "Карьерный фокус Евгения Храмова — роли на стыке mobile leadership, platform engineering и hands-on архитектуры: Head of Mobile, Mobile Platform Lead, Lead Android Architect, Kotlin Solution Architect."
 nav_order: 4
 ---
 

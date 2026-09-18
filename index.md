@@ -1,6 +1,7 @@
 ---
 layout: default
-title: Home
+title: Android Tech Lead / Head of Mobile
+description: Евгений Храмов — Android Tech Lead / Head of Mobile с 15+ годами в мобильной разработке. Резюме, карьерный фокус, impact и портфолио AI-проектов.
 nav_order: 1
 permalink: /
 ---
