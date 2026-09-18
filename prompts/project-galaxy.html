@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Созвездие проектов — Храмов Евгений</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#080B16;
+    --deep:#0E1428;
+    --panel:#121A33;
+    --line:#22305A;
+    --ice:#7FD4FF;
+    --gold:#FFC96B;
+    --star:#EAF1FB;
+    --mute:#8B99BD;
+    --dim:#5A678C;
+    /* category accents */
+    --c-core:#FFC96B;
+    --c-wow:#FF9EC4;
+    --c-quality:#B49BFF;
+    --c-platform:#6FE3C4;
+    --c-automation:#FFB27F;
+    --c-ops:#9FB2D8;
+    --shadow:0 24px 60px -20px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:
+      radial-gradient(1200px 700px at 72% 8%, rgba(127,212,255,.10), transparent 60%),
+      radial-gradient(900px 600px at 20% 90%, rgba(180,155,255,.10), transparent 55%),
+      linear-gradient(180deg, var(--deep) 0%, var(--void) 60%, #05070F 100%);
+    color:var(--star);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #bg{position:fixed;inset:0;z-index:0;display:block}
+  #stage{position:fixed;inset:0;z-index:1}
+  svg#sky{width:100%;height:100%;display:block;cursor:default}
+
+  /* ---- header ---- */
+  .head{position:fixed;z-index:3;top:0;left:0;right:0;padding:26px 30px 0;pointer-events:none}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--ice);opacity:.85;margin:0 0 10px
+  }
+  .thesis{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;
+    font-size:clamp(20px,3.1vw,34px);line-height:1.12;margin:0;max-width:16ch;
+    letter-spacing:-.01em
+  }
+  .thesis b{color:var(--gold);font-weight:700}
+  .sub{color:var(--mute);font-size:14px;margin:12px 0 0;max-width:44ch;line-height:1.5}
+
+  /* ---- filters ---- */
+  .filters{
+    position:fixed;z-index:3;left:30px;bottom:24px;right:30px;
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;pointer-events:none
+  }
+  .flabel{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--dim);margin-right:4px;width:100%;
+  }
+  .chip{
+    pointer-events:auto;cursor:pointer;border:1px solid var(--line);
+    background:rgba(18,26,51,.55);color:var(--mute);
+    padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:500;
+    backdrop-filter:blur(6px);transition:.18s;user-select:none;white-space:nowrap
+  }
+  .chip:hover{border-color:var(--ice);color:var(--star)}
+  .chip[aria-pressed="true"]{background:var(--ice);border-color:var(--ice);color:#06213A}
+  .chip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
+
+  /* ---- legend ---- */
+  .legend{
+    position:fixed;z-index:3;right:30px;top:28px;display:flex;flex-direction:column;gap:7px;
+    align-items:flex-end;pointer-events:none
+  }
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--mute);font-family:"IBM Plex Mono",monospace}
+  .lg i{width:8px;height:8px;border-radius:50%;display:inline-block;box-shadow:0 0 8px currentColor}
+
+  /* ---- node visuals ---- */
+  .node{cursor:pointer}
+  .node .lbl{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;fill:var(--mute);
+    text-anchor:middle;transition:fill .2s, opacity .2s;pointer-events:none
+  }
+  .node:hover .lbl,.node.sel .lbl{fill:var(--star)}
+  .node.dim{opacity:.16;transition:opacity .35s}
+  .edge{stroke:var(--line);fill:none;transition:opacity .35s,stroke .2s}
+  .edge.lineage{stroke:var(--ice);opacity:.55;stroke-width:1.4}
+  .edge.forge{stroke:var(--gold);opacity:.22;stroke-dasharray:2 7;stroke-width:1.2}
+  .edge.dim{opacity:.06}
+
+  /* ---- detail panel ---- */
+  .panel{
+    position:fixed;z-index:5;top:0;right:0;height:100%;width:min(430px,92vw);
+    background:linear-gradient(180deg,rgba(18,26,51,.97),rgba(10,15,30,.98));
+    border-left:1px solid var(--line);box-shadow:var(--shadow);
+    transform:translateX(105%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+    padding:30px 30px 36px;overflow-y:auto;backdrop-filter:blur(4px)
+  }
+  .panel.open{transform:translateX(0)}
+  .panel .close{
+    position:absolute;top:18px;right:18px;background:none;border:1px solid var(--line);
+    color:var(--mute);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;transition:.18s
+  }
+  .panel .close:hover{border-color:var(--ice);color:var(--star)}
+  .p-cat{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 10px}
+  .p-name{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:26px;margin:0 0 8px;letter-spacing:-.01em}
+  .p-one{color:var(--mute);font-size:15px;line-height:1.5;margin:0 0 22px}
+  .p-h{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:22px 0 10px}
+  .p-dem{list-style:none;padding:0;margin:0}
+  .p-dem li{position:relative;padding-left:18px;margin:0 0 9px;font-size:14px;line-height:1.5;color:var(--star)}
+  .p-dem li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--ice)}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .facts div{background:var(--panel);padding:11px 13px}
+  .facts .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+  .facts .v{font-size:14px;font-weight:600;font-family:"IBM Plex Mono",monospace}
+  .ptags{display:flex;flex-wrap:wrap;gap:6px}
+  .ptag{font-size:11.5px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-family:"IBM Plex Mono",monospace}
+  .p-link{
+    display:inline-flex;align-items:center;gap:8px;margin-top:26px;
+    background:var(--ice);color:#06213A;text-decoration:none;font-weight:600;
+    padding:11px 18px;border-radius:10px;font-size:14px;transition:.18s
+  }
+  .p-link:hover{filter:brightness(1.08)}
+  .p-note{font-size:11.5px;color:var(--dim);margin-top:14px;line-height:1.5}
+
+  .hint{
+    position:fixed;z-index:3;left:50%;transform:translateX(-50%);top:calc(50% + 210px);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--dim);pointer-events:none;transition:opacity .4s
+  }
+
+  @media (max-width:720px){
+    .head{padding:18px 18px 0}
+    .legend{display:none}
+    .filters{left:14px;right:14px;bottom:14px;gap:6px}
+    .chip{padding:5px 10px;font-size:11.5px}
+    .panel{width:100vw;height:78vh;top:auto;bottom:0;border-left:none;border-top:1px solid var(--line);
+      transform:translateY(105%);border-radius:16px 16px 0 0}
+    .panel.open{transform:translateY(0)}
+    .hint{display:none}
+    .thesis{font-size:20px}
+    .sub{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="head">
+  <p class="eyebrow">Храмов Евгений · AI-native engineering</p>
+  <h1 class="thesis">11 систем, собранных через <b>ИИ-агентов</b>. Все — в проде.</h1>
+  <p class="sub">Не демо, а рабочие продукты в ежедневном использовании. Метод — не единичный кейс, а повторяемый процесс с контролем качества.</p>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<div id="stage">
+  <svg id="sky" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1000 600" role="img" aria-label="Интерактивная карта проектов">
+    <g id="edges"></g>
+    <g id="nodes"></g>
+  </svg>
+</div>
+
+<div class="hint" id="hint">Наведи на звезду · нажми, чтобы открыть</div>
+
+<div class="filters" id="filters">
+  <span class="flabel">Фильтр — метод и стек</span>
+</div>
+
+<aside class="panel" id="panel" aria-hidden="true">
+  <button class="close" id="close" aria-label="Закрыть">✕</button>
+  <div id="pbody"></div>
+</aside>
+
+<script>
+"use strict";
+
+// ---------- public-safe project data (метод + метрики, без внутрянки) ----------
+const CAT = {
+  core:      {label:"Метод / ядро",     color:"var(--c-core)"},
+  wow:       {label:"Wow-кейс",          color:"var(--c-wow)"},
+  quality:   {label:"Контроль качества", color:"var(--c-quality)"},
+  platform:  {label:"Платформа",         color:"var(--c-platform)"},
+  automation:{label:"Автоматизация",     color:"var(--c-automation)"},
+  ops:       {label:"Эксплуатация",      color:"var(--c-ops)"},
+};
+
+const P = [
+  { id:"meta-agent", name:"meta-agent", cat:"core", x:500, y:300, loc:47300,
+    one:"Собственная среда оркестрации ИИ-агентов, в которой построены все остальные проекты.",
+    dem:["Системное мышление: пространства → сессии → пайплайны, а не «попросил код»",
+         "Качество результата агента = качество контекста и инструментов — и я это построил",
+         "15+ внешних систем подключены как инструменты агента"],
+    facts:{"Разработка":"4.5 мес · активно","Коммитов":"82","Код":"~47 300 строк JS","Тесты":"31 набор"},
+    tags:["Метод","Прототип до кода","Интеграции","В проде"] },
+
+  { id:"family-messenger", name:"family-messenger", cat:"wow", x:762, y:150, loc:15800,
+    one:"Кроссплатформенный мессенджер на KMP за 9 дней — Android, iOS, Desktop и Web из одного кода.",
+    dem:["Скорость: то, что командой делают кварталами — за девять дней",
+         "shared-contract как защита от рассинхрона между пятью таргетами",
+         "Доведено до эксплуатации: деплой, runbook, install-wizard для не-технаря"],
+    facts:{"Разработка":"9 дней","Коммитов":"63","Код":"~15 800 строк Kotlin","Статус":"задеплоен, используется"},
+    tags:["Kotlin / KMP","Прототип до кода","В проде","Ежедневно"] },
+
+  { id:"impact-analysis", name:"impact-analysis", cat:"quality", x:252, y:170, loc:3100,
+    one:"Kotlin CLI, который по diff'у вычисляет, какие UI-тесты реально нужно прогнать.",
+    dem:["Методология, а не везение: этапная приёмка по фактическим цифрам",
+         "Декомпозиция задачи так, чтобы агент не терялся на чужой большой кодовой базе",
+         "Честная работа с краевыми случаями — зафиксированы явно, а не замаскированы"],
+    facts:{"Разработка":"5 дней","Коммитов":"16","Код":"~3 100 строк Kotlin","Проверено на":"реальном Android-проекте"},
+    tags:["Kotlin / KMP","Контроль качества","Интеграции"] },
+
+  { id:"gitlab-panel", name:"gitlab-panel", cat:"quality", x:196, y:322, loc:14200,
+    one:"Панель прозрачности релизов: что дошло до прода и что потерялось между стадиями.",
+    dem:["Доменное моделирование стадий, пакетов и переходов доведено до продукта",
+         "Clean Architecture как входное ТЗ агенту — соблюдена не случайно, а по документу",
+         "Собственные чеклисты ревью и аудит как процедура приёмки работы агента"],
+    facts:{"Разработка":"2.5 мес","Коммитов":"123","Код":"~14 200 строк Python","Тесты":"24 файла · coverage"},
+    tags:["FastAPI","Контроль качества","Интеграции","В проде"] },
+
+  { id:"doctor", name:"doctor", cat:"quality", x:268, y:452, loc:2750,
+    one:"Источник-независимое хранилище семейных данных с единой хронологией и ИИ-разбором документов.",
+    dem:["Архитектурная дальновидность: «всеядное ядро» спроектировано до второго источника",
+         "Жёсткие рамки качества агенту: mypy strict + ruff — и код в них укладывается",
+         "ИИ-извлечение из документов встроено внутрь продукта, а не только в разработку"],
+    facts:{"Разработка":"~2 мес","Код":"~2 750 строк Python","Качество":"mypy strict + ruff","Статус":"задеплоен"},
+    tags:["FastAPI","Контроль качества","ИИ в продукте"] },
+
+  { id:"running-portal", name:"running-portal", cat:"platform", x:700, y:322, loc:11000,
+    one:"Портал беговой аналитики с ИИ-тренером и полностью автономным синком данных трекера.",
+    dem:["Продуктовое мышление: фичи выстроены как последовательность вопросов пользователя",
+         "Дизайн-макет отдельным шагом до реализации, а не «как получится»",
+         "Автономная работа с недружелюбной внешней авторизацией без участия человека"],
+    facts:{"Разработка":"4 мес","Коммитов":"24","Код":"~11 000 строк Python","Статус":"ежедневное использование"},
+    tags:["FastAPI","ИИ в продукте","Прототип до кода","Ежедневно","В проде"] },
+
+  { id:"orienteering", name:"orienteering", cat:"platform", x:860, y:404, loc:18400,
+    one:"Разбор стартов по ориентированию: геопривязка карт, плеер трека, сплиты по КП.",
+    dem:["Ведение агента через нетривиальную предметную математику (геопривязка, Jenks)",
+         "Переиспользование архитектуры running-portal — зрелый инженерный приём",
+         "UX через HTML-прототипы визуализаций до реализации"],
+    facts:{"Разработка":"2 мес","Коммитов":"57","Код":"~18 400 строк","Тесты":"10 наборов"},
+    tags:["FastAPI","Шаблон → переиспользование","Прототип до кода","В проде"] },
+
+  { id:"ikus", name:"ikus.pesc.ru", cat:"automation", x:520, y:520, loc:970,
+    one:"Автоподача показаний воды и электричества в личный кабинет — без участия человека.",
+    dem:["Автоматизация до состояния «человек не участвует», а не «удобная кнопка»",
+         "Реверс авторизации с TOTP-верификацией",
+         "Тесты внешней интеграции через моки — без флаки-запросов в живой кабинет"],
+    facts:{"Разработка":"4 дня","Код":"~970 строк Python","Статус":"круглосуточно"},
+    tags:["FastAPI","Автоматизация","Интеграции","В проде"] },
+
+  { id:"meters", name:"meters", cat:"automation", x:648, y:544, loc:900,
+    one:"Агрегатор «семейства счётчиков»: вода, газ, электричество — один экран, одна кнопка.",
+    dem:["Системное мышление: два источника + агрегатор, источники подменяемы через конфиг",
+         "Размножение решения: один отработанный шаблон → три сервиса за 4 дня",
+         "Доведено до эксплуатации: Docker Compose собирает связку целиком"],
+    facts:{"Разработка":"3 сервиса / 4 дня","Код":"~900 строк Python","Статус":"главный экран"},
+    tags:["FastAPI","Автоматизация","Шаблон → переиспользование","Ежедневно"] },
+
+  { id:"peterburgregiongaz", name:"peterburgregiongaz", cat:"automation", x:772, y:522, loc:820,
+    one:"Тот же сценарий автоподачи, но для газового кабинета — второй экземпляр шаблона.",
+    dem:["Переиспользование шаблона: при работе с ИИ шаблон дороже кода",
+         "Изоляция поставщик-специфичной логики в отдельном адаптере",
+         "Новый поставщик закрыт за дни, потому что решение спроектировано повторяемым"],
+    facts:{"Разработка":"4 дня · параллельно","Код":"~820 строк Python","Статус":"круглосуточно"},
+    tags:["FastAPI","Автоматизация","Шаблон → переиспользование"] },
+
+  { id:"procboard", name:"procboard", cat:"ops", x:500, y:410, loc:630,
+    one:"Мини-дашборд, из которого запускаются и мониторятся все остальные сервисы на сервере.",
+    dem:["Чувство меры: 630 строк, без Kubernetes там, где хватает конфига",
+         "Мышление уровня эксплуатации: healthcheck'и, автостарт, аптайм, логи",
+         "Неинвазивный дизайн: управляемые сервисы не знают о панели"],
+    facts:{"Код":"~630 строк Python","Статус":"systemd-сервис","Роль":"управляет остальными"},
+    tags:["Автоматизация","Ежедневно","В проде"] },
+];
+
+// meaningful constellation links only
+const EDGES = [
+  {a:"running-portal", b:"orienteering", type:"lineage"},   // template reuse
+  {a:"ikus", b:"meters", type:"lineage"},                   // counter family
+  {a:"peterburgregiongaz", b:"meters", type:"lineage"},
+  {a:"meta-agent", b:"family-messenger", type:"forge"},     // forged in the core
+  {a:"meta-agent", b:"gitlab-panel", type:"forge"},
+  {a:"meta-agent", b:"running-portal", type:"forge"},
+  {a:"meta-agent", b:"impact-analysis", type:"forge"},
+  {a:"meta-agent", b:"procboard", type:"forge"},
+  {a:"meta-agent", b:"doctor", type:"forge"},
+  {a:"meta-agent", b:"ikus", type:"forge"},
+];
+
+const byId = Object.fromEntries(P.map(p=>[p.id,p]));
+const reduce = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+// radius by scale
+const locs = P.map(p=>p.loc);
+const rmin=Math.min(...locs), rmax=Math.max(...locs);
+function radius(loc){ const t=(Math.sqrt(loc)-Math.sqrt(rmin))/(Math.sqrt(rmax)-Math.sqrt(rmin)); return 7+t*15; }
+function catColor(cat){ return getComputedStyle(document.documentElement).getPropertyValue(CAT[cat].color.replace('var(','').replace(')','')).trim(); }
+
+const NS="http://www.w3.org/2000/svg";
+const gEdges=document.getElementById("edges");
+const gNodes=document.getElementById("nodes");
+
+// ---- edges ----
+EDGES.forEach(e=>{
+  const a=byId[e.a], b=byId[e.b];
+  const l=document.createElementNS(NS,"line");
+  l.setAttribute("x1",a.x); l.setAttribute("y1",a.y);
+  l.setAttribute("x2",b.x); l.setAttribute("y2",b.y);
+  l.setAttribute("class","edge "+e.type);
+  l.dataset.a=e.a; l.dataset.b=e.b;
+  gEdges.appendChild(l);
+});
+
+// ---- nodes ----
+P.forEach((p,i)=>{
+  const r=radius(p.loc);
+  const col=catColor(p.cat);
+  const g=document.createElementNS(NS,"g");
+  g.setAttribute("class","node"); g.setAttribute("tabindex","0");
+  g.setAttribute("role","button");
+  g.setAttribute("aria-label",p.name+" — "+p.one);
+  g.dataset.id=p.id;
+
+  // glow layers
+  const glow=document.createElementNS(NS,"circle");
+  glow.setAttribute("cx",p.x); glow.setAttribute("cy",p.y);
+  glow.setAttribute("r",r*2.7); glow.setAttribute("fill",col); glow.setAttribute("opacity",".13");
+  const halo=document.createElementNS(NS,"circle");
+  halo.setAttribute("cx",p.x); halo.setAttribute("cy",p.y);
+  halo.setAttribute("r",r*1.6); halo.setAttribute("fill",col); halo.setAttribute("opacity",".26");
+  halo.setAttribute("class","halo");
+  const core=document.createElementNS(NS,"circle");
+  core.setAttribute("cx",p.x); core.setAttribute("cy",p.y);
+  core.setAttribute("r",r); core.setAttribute("fill", p.cat==="core"?col:"var(--star)");
+  core.setAttribute("stroke",col); core.setAttribute("stroke-width", p.cat==="core"?0:1.4);
+
+  // orbital rings for the core (the foundry)
+  if(p.cat==="core"){
+    [r*2.1, r*2.9].forEach((rr,idx)=>{
+      const ring=document.createElementNS(NS,"circle");
+      ring.setAttribute("cx",p.x); ring.setAttribute("cy",p.y); ring.setAttribute("r",rr);
+      ring.setAttribute("fill","none"); ring.setAttribute("stroke",col);
+      ring.setAttribute("stroke-width","1"); ring.setAttribute("opacity",idx?".12":".2");
+      g.appendChild(ring);
+    });
+  }
+
+  const lbl=document.createElementNS(NS,"text");
+  lbl.setAttribute("x",p.x); lbl.setAttribute("y",p.y + r + 17);
+  lbl.setAttribute("class","lbl"); lbl.textContent=p.name;
+
+  g.appendChild(glow); g.appendChild(halo); g.appendChild(core); g.appendChild(lbl);
+  gNodes.appendChild(g);
+
+  // load ignition (staggered from the core outward)
+  if(!reduce){
+    g.style.opacity="0";
+    g.style.transform="scale(.4)";
+    g.style.transformOrigin=p.x+"px "+p.y+"px";
+    g.style.transition="opacity .6s ease, transform .6s cubic-bezier(.22,1.2,.36,1)";
+    const d=Math.hypot(p.x-500,p.y-300);
+    setTimeout(()=>{ g.style.opacity="1"; g.style.transform="scale(1)"; }, 260 + d*1.4);
+    // twinkle
+    halo.style.animation=`tw ${3+Math.random()*3}s ease-in-out ${Math.random()*3}s infinite`;
+  }
+
+  g.addEventListener("click",()=>select(p.id));
+  g.addEventListener("keydown",ev=>{ if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();select(p.id);} });
+  g.addEventListener("mouseenter",()=>hover(p.id,true));
+  g.addEventListener("mouseleave",()=>hover(p.id,false));
+});
+
+// twinkle keyframes
+const kf=document.createElement("style");
+kf.textContent="@keyframes tw{0%,100%{opacity:.26}50%{opacity:.42}}";
+document.head.appendChild(kf);
+
+// ---------- hover: light up connected constellation ----------
+function hover(id,on){
+  if(activeFilters.size) return; // don't fight the filter state
+  document.querySelectorAll(".edge").forEach(e=>{
+    const connected = e.dataset.a===id || e.dataset.b===id;
+    e.style.opacity = on ? (connected?"":"") : "";
+    if(on && connected){ e.style.strokeWidth = e.classList.contains("lineage")?"2":"1.6"; }
+    else { e.style.strokeWidth=""; }
+  });
+}
+
+// ---------- selection / panel ----------
+const panel=document.getElementById("panel");
+const pbody=document.getElementById("pbody");
+const hint=document.getElementById("hint");
+let selId=null;
+
+function select(id){
+  const p=byId[id]; if(!p) return;
+  selId=id;
+  document.querySelectorAll(".node").forEach(n=>n.classList.toggle("sel",n.dataset.id===id));
+  const col=CAT[p.cat].color;
+  const facts=Object.entries(p.facts).map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+  const dem=p.dem.map(d=>`<li>${d}</li>`).join("");
+  const tags=p.tags.map(t=>`<span class="ptag">${t}</span>`).join("");
+  pbody.innerHTML=`
+    <p class="p-cat" style="color:${col}">${CAT[p.cat].label}</p>
+    <h2 class="p-name">${p.name}</h2>
+    <p class="p-one">${p.one}</p>
+    <p class="p-h">Что демонстрирует</p>
+    <ul class="p-dem">${dem}</ul>
+    <p class="p-h">Факты</p>
+    <div class="facts">${facts}</div>
+    <p class="p-h">Теги</p>
+    <div class="ptags">${tags}</div>
+    <a class="p-link" href="projects/${p.id}.html">Открыть полную страницу →</a>
+    <p class="p-note">Публичная витрина: метод и метрики, без внутренних данных.</p>`;
+  panel.classList.add("open"); panel.setAttribute("aria-hidden","false");
+  if(hint) hint.style.opacity="0";
+}
+function closePanel(){
+  panel.classList.remove("open"); panel.setAttribute("aria-hidden","true");
+  document.querySelectorAll(".node").forEach(n=>n.classList.remove("sel")); selId=null;
+}
+document.getElementById("close").addEventListener("click",closePanel);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closePanel(); });
+document.getElementById("sky").addEventListener("click",e=>{ if(e.target.id==="sky") closePanel(); });
+
+// ---------- filters ----------
+const allTags=[...new Set(P.flatMap(p=>p.tags))];
+const order=["Метод","Контроль качества","Шаблон → переиспользование","Прототип до кода","ИИ в продукте","Kotlin / KMP","FastAPI","Автоматизация","Интеграции","Ежедневно","В проде"];
+allTags.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+const activeFilters=new Set();
+const fbox=document.getElementById("filters");
+allTags.forEach(t=>{
+  const c=document.createElement("button");
+  c.className="chip"; c.setAttribute("aria-pressed","false"); c.textContent=t;
+  c.addEventListener("click",()=>{
+    if(activeFilters.has(t)){activeFilters.delete(t);c.setAttribute("aria-pressed","false");}
+    else{activeFilters.add(t);c.setAttribute("aria-pressed","true");}
+    applyFilters();
+  });
+  fbox.appendChild(c);
+});
+function applyFilters(){
+  const active=activeFilters.size>0;
+  document.querySelectorAll(".node").forEach(n=>{
+    const p=byId[n.dataset.id];
+    const match=!active || p.tags.some(t=>activeFilters.has(t));
+    n.classList.toggle("dim",active && !match);
+  });
+  document.querySelectorAll(".edge").forEach(e=>{
+    const on = !active || ( byId[e.dataset.a].tags.some(t=>activeFilters.has(t)) && byId[e.dataset.b].tags.some(t=>activeFilters.has(t)) );
+    e.classList.toggle("dim",active && !on);
+  });
+}
+
+// ---------- legend ----------
+const lg=document.getElementById("legend");
+Object.values(CAT).forEach(c=>{
+  const d=document.createElement("div"); d.className="lg";
+  d.innerHTML=`<span>${c.label}</span><i style="color:${c.color};background:${c.color}"></i>`;
+  lg.appendChild(d);
+});
+
+// ---------- background starfield ----------
+const cv=document.getElementById("bg"), cx=cv.getContext("2d");
+let W,H,stars;
+function resize(){
+  W=cv.width=innerWidth*devicePixelRatio; H=cv.height=innerHeight*devicePixelRatio;
+  cv.style.width=innerWidth+"px"; cv.style.height=innerHeight+"px";
+  stars=Array.from({length:Math.min(240,Math.floor(innerWidth*innerHeight/6500))},()=>({
+    x:Math.random()*W, y:Math.random()*H, z:Math.random()*.7+.3,
+    r:(Math.random()*1.1+.2)*devicePixelRatio, tw:Math.random()*Math.PI*2
+  }));
+}
+resize(); addEventListener("resize",resize);
+let t=0;
+function draw(){
+  cx.clearRect(0,0,W,H);
+  for(const s of stars){
+    const a=.35+.35*Math.sin(t*.6+s.tw);
+    cx.beginPath(); cx.arc(s.x,s.y,s.r,0,7); 
+    cx.fillStyle="rgba(200,220,255,"+(a*s.z).toFixed(3)+")"; cx.fill();
+    if(!reduce){ s.y+=s.z*.06*devicePixelRatio; if(s.y>H)s.y=0; }
+  }
+  t+=.016; requestAnimationFrame(draw);
+}
+if(reduce){ // static single paint
+  for(const s of stars){cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle="rgba(200,220,255,"+(.5*s.z).toFixed(3)+")";cx.fill();}
+} else draw();
+
+// hide hint after a while
+if(!reduce) setTimeout(()=>{ if(!selId && hint) hint.style.opacity=".0"; }, 6000);
+</script>
+</body>
+</html>

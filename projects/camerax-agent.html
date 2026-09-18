@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CameraX agent — расследование бага с coding agent · Храмов Евгений</title>
+<meta name="description" content="История расследования рассинхронизации CameraX Preview и ImageAnalysis при повороте Android-планшета с помощью coding agent.">
+<link rel="canonical" href="https://hram.github.io/projects/camerax-agent.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CameraX agent — расследование бага с coding agent">
+<meta property="og:description" content="Как измерения на реальном планшете помогли остановить timing-based workaround и найти причину рассинхронизации CameraX.">
+<meta property="og:url" content="https://hram.github.io/projects/camerax-agent.html">
+<meta property="og:image" content="https://hram.github.io/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "name":"CameraX agent",
+  "headline":"CameraX agent — расследование бага с coding agent",
+  "description":"История расследования рассинхронизации CameraX Preview и ImageAnalysis при повороте Android-планшета.",
+  "keywords":"Android, CameraX, ImageAnalysis, coding agent, debugging, Kotlin",
+  "author":{"@type":"Person","name":"Евгений Храмов","jobTitle":"Head of Mobile / Android Tech Lead","url":"https://hram.github.io/","sameAs":["https://www.linkedin.com/in/hram0v/","https://github.com/hram"]}
+}
+</script>
+<style>
+  :root{--void:#080B16;--deep:#0E1428;--panel:#121A33;--line:#22305A;--ice:#7FD4FF;--star:#EAF1FB;--mute:#8B99BD;--dim:#5A678C;--accent:#B49BFF}
+  *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--star);background:radial-gradient(900px 500px at 80% -5%,rgba(180,155,255,.1),transparent 60%),radial-gradient(800px 600px at 10% 100%,rgba(127,212,255,.07),transparent 55%),linear-gradient(180deg,var(--deep),var(--void) 55%,#05070F);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased}
+  #bg{position:fixed;inset:0;z-index:0}.wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:34px 26px 90px}.nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:52px}.back{font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.12em;color:var(--mute);text-decoration:none}.back:hover{color:var(--ice)}.who{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin:0 0 16px;display:flex;align-items:center;gap:9px}.eyebrow i{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}h1{font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.02em;font-size:clamp(34px,6vw,54px);line-height:1.03;margin:0 0 20px}.lead{font-size:19px;line-height:1.5;color:#C4CEE6;margin:0 0 8px}.accent-rule{width:44px;height:3px;background:var(--accent);border-radius:2px;margin:26px 0 0}h2{font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin:52px 0 16px;padding-bottom:12px;border-bottom:1px solid var(--line)}p{margin:0 0 16px;color:#CBD4E8}.flow{margin:24px 0 0;padding:20px 22px;border:1px solid var(--line);border-radius:12px;background:rgba(18,26,51,.72);font-family:"IBM Plex Mono",monospace;color:var(--ice);white-space:pre-wrap}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}.facts div{background:rgba(18,26,51,.7);padding:16px 18px}.facts .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}.facts .v{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:500}.relevance{margin-top:44px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;background:rgba(180,155,255,.06);padding:22px 24px}.relevance .h{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:17px;margin:0 0 8px;color:#fff}.relevance p{margin:0;color:#C4CEE6;font-size:15px}.foot{margin-top:64px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding-top:26px;border-top:1px solid var(--line)}.foot a{font-family:"IBM Plex Mono",monospace;font-size:13px;text-decoration:none;padding:10px 16px;border-radius:9px}.primary{background:var(--accent);color:#171126;font-weight:500}.ghost{border:1px solid var(--line);color:var(--mute)}.disclaim{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim);margin-left:auto}@media(max-width:560px){.facts{grid-template-columns:1fr 1fr}.disclaim{width:100%;margin:10px 0 0}}@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto}}
+</style>
+<script src="../assets/analytics.js" defer></script>
+</head>
+<body><canvas id="bg"></canvas><main class="wrap">
+  <div class="nav"><a class="back" href="../project-galaxy.html">← Созвездие проектов</a><span class="who">Храмов Евгений</span></div>
+  <p class="eyebrow"><i></i>Инженерное расследование</p>
+  <h1>CameraX agent</h1>
+  <p class="lead">Реальная история отладки: Preview показывал правильную картинку, а ImageAnalysis получал кадры с неверной ориентацией после поворота планшета на 180°.</p><div class="accent-rule"></div>
+  <h2>Что это</h2>
+  <p>Небольшой кейс о том, как coding agent участвовал в настоящем цикле расследования: читал код, добавлял instrumentation, запускал <code>adb</code> и <code>logcat</code>, анализировал данные и обновлял MR.</p>
+  <p>Физический планшет при этом оставался зоной ответственности разработчика. Именно это разделение сделало работу похожей на парное программирование: агент выполнял механические шаги, а разработчик задавал эксперимент и оценивал гипотезы.</p>
+  <div class="flow">гипотеза → instrumentation → эксперимент на устройстве → данные → следующая гипотеза</div>
+  <h2>Что показало расследование</h2>
+  <p>При переходе от <code>ROTATION_90</code> к <code>ROTATION_270</code> Android продолжал считать устройство landscape. Поэтому <code>Configuration.orientation</code> не менялась, а <code>ImageAnalysis.targetRotation</code> оставался старым.</p>
+  <div class="facts"><div><div class="k">Симптом</div><div class="v">Preview ≠ Analysis</div></div><div><div class="k">Поворот</div><div class="v">90° → 270°</div></div><div><div class="k">Root cause</div><div class="v">stale target</div></div><div><div class="k">Workaround</div><div class="v">отменён</div></div><div><div class="k">Решение</div><div class="v">dynamic rotation</div></div><div><div class="k">Проверка</div><div class="v">реальный планшет</div></div></div>
+  <h2>Итоговое решение</h2>
+  <p>Вместо задержки и повторного rebind использован <code>OrientationEventListener</code>. Существующие <code>Preview</code> и <code>ImageAnalysis</code> получают новый <code>targetRotation</code> без пересоздания use cases.</p>
+  <p>После исправления <code>ImageProxy.rotationDegrees</code> изменился с <code>0</code> на <code>180</code>, а диагностические значения стали согласованными.</p>
+  <div class="relevance"><p class="h">Почему это важно для работы с агентами</p><p>Агент не стал безошибочным исполнителем. Его ценность была в ускорении проверяемого цикла, а роль разработчика сместилась к постановке эксперимента, проверке доказательств и остановке решения, которое зависело от случайного тайминга.</p></div>
+  <div class="foot"><a class="primary" href="../articles/camerax-agent/">Читать статью</a><a class="ghost" href="../articles/">Все статьи</a><a class="ghost" href="../">На главную</a><span class="disclaim">публичная витрина · реальный кейс</span></div>
+</main><script>(function(){var c=document.getElementById('bg'),x=c.getContext('2d'),dpr=devicePixelRatio||1;function paint(){c.width=innerWidth*dpr;c.height=innerHeight*dpr;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';var n=Math.min(160,Math.floor(innerWidth*innerHeight/8000));for(var i=0;i<n;i++){var r=(Math.random()*1.1+.2)*dpr,a=(Math.random()*.4+.15);x.beginPath();x.arc(Math.random()*c.width,Math.random()*c.height,r,0,7);x.fillStyle='rgba(200,220,255,'+a.toFixed(2)+')';x.fill()}}paint();addEventListener('resize',paint)})();</script></body>
+</html>

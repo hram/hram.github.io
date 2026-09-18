@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Созвездие проектов — Храмов Евгений</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#080B16;
+    --deep:#0E1428;
+    --panel:#121A33;
+    --line:#22305A;
+    --ice:#7FD4FF;
+    --gold:#FFC96B;
+    --star:#EAF1FB;
+    --mute:#8B99BD;
+    --dim:#5A678C;
+    /* category accents */
+    --c-core:#FFC96B;
+    --c-wow:#FF9EC4;
+    --c-quality:#B49BFF;
+    --c-platform:#6FE3C4;
+    --c-automation:#FFB27F;
+    --c-ops:#9FB2D8;
+    --shadow:0 24px 60px -20px rgba(0,0,0,.7);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:
+      radial-gradient(1200px 700px at 72% 8%, rgba(127,212,255,.10), transparent 60%),
+      radial-gradient(900px 600px at 20% 90%, rgba(180,155,255,.10), transparent 55%),
+      linear-gradient(180deg, var(--deep) 0%, var(--void) 60%, #05070F 100%);
+    color:var(--star);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  #bg{position:fixed;inset:0;z-index:0;display:block}
+  #stage{position:fixed;inset:0;z-index:1}
+  svg#sky{width:100%;height:100%;display:block;cursor:default}
+
+  /* ---- header ---- */
+  .head{position:fixed;z-index:3;top:0;left:0;right:0;padding:26px 30px 0;pointer-events:none}
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.32em;
+    text-transform:uppercase;color:var(--ice);opacity:.85;margin:0 0 10px
+  }
+  .thesis{
+    font-family:"Space Grotesk",sans-serif;font-weight:600;
+    font-size:clamp(20px,3.1vw,34px);line-height:1.12;margin:0;max-width:16ch;
+    letter-spacing:-.01em
+  }
+  .thesis b{color:var(--gold);font-weight:700}
+  .sub{color:var(--mute);font-size:14px;margin:12px 0 0;max-width:44ch;line-height:1.5}
+
+  /* ---- filters ---- */
+  .filters{
+    position:fixed;z-index:3;left:30px;bottom:24px;right:30px;
+    display:flex;flex-wrap:wrap;gap:8px;align-items:center;pointer-events:none
+  }
+  .flabel{
+    font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--dim);margin-right:4px;width:100%;
+  }
+  .chip{
+    pointer-events:auto;cursor:pointer;border:1px solid var(--line);
+    background:rgba(18,26,51,.55);color:var(--mute);
+    padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:500;
+    backdrop-filter:blur(6px);transition:.18s;user-select:none;white-space:nowrap
+  }
+  .chip:hover{border-color:var(--ice);color:var(--star)}
+  .chip[aria-pressed="true"]{background:var(--ice);border-color:var(--ice);color:#06213A}
+  .chip .dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
+
+  /* ---- legend ---- */
+  .rail{
+    position:fixed;z-index:3;right:30px;top:28px;display:flex;flex-direction:column;
+    gap:18px;align-items:flex-end
+  }
+  .legend{display:flex;flex-direction:column;gap:7px;align-items:flex-end;pointer-events:none}
+  /* статический список: настоящие ссылки в разметке — для поисковиков,
+     скринридеров и чтения без JS (граф строится скриптом) */
+  .allp{pointer-events:auto;font-family:"IBM Plex Mono",monospace;text-align:right}
+  .allp summary{
+    cursor:pointer;list-style:none;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--dim);transition:color .18s
+  }
+  .allp summary::-webkit-details-marker{display:none}
+  .allp summary:hover,.allp[open] summary{color:var(--ice)}
+  .allp ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+  .allp a{font-size:11.5px;color:var(--mute);text-decoration:none;transition:color .18s}
+  .allp a:hover,.allp a:focus-visible{color:var(--star)}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--mute);font-family:"IBM Plex Mono",monospace}
+  .lg i{width:8px;height:8px;border-radius:50%;display:inline-block;box-shadow:0 0 8px currentColor}
+
+  /* ---- node visuals ---- */
+  .node{cursor:pointer}
+  /* плавный reflow: раскладка пересчитывается под экран (см. скрипт), а не жёстко задана —
+     transition на геометрию сглаживает переход между пересчётами (ресайз, догрузка шрифта) */
+  .node circle{transition:cx .45s ease, cy .45s ease}
+  .node .lbl{
+    font-family:"IBM Plex Mono",monospace;font-size:12px;fill:var(--mute);
+    text-anchor:middle;transition:fill .2s, opacity .2s, x .45s ease, y .45s ease;pointer-events:none
+  }
+  .node:hover .lbl,.node.sel .lbl{fill:var(--star)}
+  .node.dim{opacity:.14;transition:opacity .35s;pointer-events:none}
+  /* «оживление» после загрузки: движение сообщает, что звёзды кликабельны */
+  .node.pulse{animation:np .85s cubic-bezier(.22,1,.36,1)}
+  @keyframes np{0%{transform:scale(1)}38%{transform:scale(1.2)}100%{transform:scale(1)}}
+  .edge{stroke:var(--line);fill:none;transition:opacity .35s,stroke .2s,x1 .45s ease,y1 .45s ease,x2 .45s ease,y2 .45s ease}
+  .edge.lineage{stroke:var(--ice);opacity:.55;stroke-width:1.4}
+  .edge.forge{stroke:var(--gold);opacity:.22;stroke-dasharray:2 7;stroke-width:1.2}
+  .edge.dim{opacity:.06}
+
+  /* ---- detail panel ---- */
+  .panel{
+    position:fixed;z-index:5;top:0;right:0;height:100%;width:min(430px,92vw);
+    background:linear-gradient(180deg,rgba(18,26,51,.97),rgba(10,15,30,.98));
+    border-left:1px solid var(--line);box-shadow:var(--shadow);
+    transform:translateX(105%);transition:transform .42s cubic-bezier(.22,.61,.36,1);
+    padding:30px 30px 36px;overflow-y:auto;backdrop-filter:blur(4px)
+  }
+  .panel.open{transform:translateX(0)}
+  .panel .close{
+    position:absolute;top:18px;right:18px;background:none;border:1px solid var(--line);
+    color:var(--mute);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;transition:.18s
+  }
+  .panel .close:hover{border-color:var(--ice);color:var(--star)}
+  .p-cat{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 10px}
+  .p-name{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:26px;margin:0 0 8px;letter-spacing:-.01em}
+  .p-one{color:var(--mute);font-size:15px;line-height:1.5;margin:0 0 22px}
+  .p-h{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:22px 0 10px}
+  .p-dem{list-style:none;padding:0;margin:0}
+  .p-dem li{position:relative;padding-left:18px;margin:0 0 9px;font-size:14px;line-height:1.5;color:var(--star)}
+  .p-dem li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--ice)}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .facts div{background:var(--panel);padding:11px 13px}
+  .facts .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+  .facts .v{font-size:14px;font-weight:600;font-family:"IBM Plex Mono",monospace}
+  .p-ai{margin:20px 0 0;padding:13px 15px;border:1px solid var(--line);border-left:3px solid var(--ice);
+    border-radius:10px;background:rgba(127,212,255,.05)}
+  .p-ai p{margin:0;font-size:13.5px;line-height:1.55;color:#C4CEE6}
+  .p-ai-h{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.22em;
+    text-transform:uppercase;margin:0 0 6px!important}
+  .ptags{display:flex;flex-wrap:wrap;gap:6px}
+  .ptag{font-size:11.5px;color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-family:"IBM Plex Mono",monospace}
+  .p-link{
+    display:inline-flex;align-items:center;gap:8px;margin-top:26px;
+    background:var(--ice);color:#06213A;text-decoration:none;font-weight:600;
+    padding:11px 18px;border-radius:10px;font-size:14px;transition:.18s
+  }
+  .p-link:hover{filter:brightness(1.08)}
+  .p-note{font-size:11.5px;color:var(--dim);margin-top:14px;line-height:1.5}
+
+  .hint{
+    position:fixed;z-index:3;left:50%;transform:translateX(-50%);top:calc(50% + 210px);
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--dim);pointer-events:none;transition:opacity .4s
+  }
+
+  @media (max-width:720px){
+    .head{padding:18px 18px 0}
+    .rail{right:14px;top:14px}
+    .legend{display:none}
+    .filters{left:14px;right:14px;bottom:14px;gap:6px}
+    .chip{padding:5px 10px;font-size:11.5px}
+    .panel{width:100vw;height:78vh;top:auto;bottom:0;border-left:none;border-top:1px solid var(--line);
+      transform:translateY(105%);border-radius:16px 16px 0 0}
+    .panel.open{transform:translateY(0)}
+    .hint{display:none}
+    .thesis{font-size:20px}
+    .sub{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important}
+  }
+</style>
+<script src="assets/analytics.js" defer></script>
+<meta property="og:type" content="website">
+<meta property="og:title" content="Созвездие AI-проектов — Храмов Евгений">
+<meta property="og:description" content="Интерактивная карта 16 систем, построенных с ИИ-агентами: метод, метрики и след AI-процесса.">
+<meta property="og:url" content="https://hram.github.io/project-galaxy.html">
+<link rel="canonical" href="https://hram.github.io/project-galaxy.html">
+<meta name="description" content="Созвездие AI-проектов Евгения Храмова: интерактивная карта 16 систем, построенных с ИИ-агентами.">
+<meta property="og:image" content="https://hram.github.io/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="head">
+  <p class="eyebrow">Храмов Евгений · AI-native engineering</p>
+  <h1 class="thesis">16 систем, собранных через <b>ИИ-агентов</b>.</h1>
+  <p class="sub">Не демо, а рабочие продукты в ежедневном использовании. Метод — не единичный кейс, а повторяемый процесс с контролем качества.</p>
+</div>
+
+<div class="rail">
+  <div class="legend" id="legend"></div>
+  <details class="allp">
+    <summary>Все проекты списком</summary>
+    <ul>
+        <li><a href="projects/meta-agent.html">meta-agent</a></li>
+        <li><a href="projects/family-messenger.html">family-messenger</a></li>
+        <li><a href="projects/impact-analysis.html">impact-analysis</a></li>
+        <li><a href="projects/gitlab-panel.html">gitlab-panel</a></li>
+        <li><a href="projects/doctor.html">doctor</a></li>
+        <li><a href="projects/running-portal.html">running-portal</a></li>
+        <li><a href="projects/orienteering.html">orienteering</a></li>
+        <li><a href="projects/ikus.html">ikus.pesc.ru</a></li>
+        <li><a href="projects/meters.html">meters</a></li>
+        <li><a href="projects/peterburgregiongaz.html">peterburgregiongaz</a></li>
+        <li><a href="projects/procboard.html">procboard</a></li>
+        <li><a href="projects/github-hram.html">github-hram</a></li>
+        <li><a href="projects/android-ui-renderer-mcp.html">android-ui-renderer-mcp</a></li>
+        <li><a href="projects/allure-testops-mcp.html">allure-testops-mcp</a></li>
+        <li><a href="projects/career-portal.html">career-portal</a></li>
+        <li><a href="projects/gdebenz.html">gdebenz</a></li>
+    </ul>
+  </details>
+</div>
+
+<div id="stage">
+  <svg id="sky" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1000 600" role="img" aria-label="Интерактивная карта проектов">
+    <g id="edges"></g>
+    <g id="nodes"></g>
+  </svg>
+</div>
+
+<div class="hint" id="hint">Наведи на звезду · нажми, чтобы открыть</div>
+
+<div class="filters" id="filters">
+  <span class="flabel">Фильтр — метод и стек</span>
+</div>
+
+<aside class="panel" id="panel" aria-hidden="true">
+  <button class="close" id="close" aria-label="Закрыть">✕</button>
+  <div id="pbody"></div>
+</aside>
+
+<!-- Раскладка созвездия считается на клиенте (d3-force) под экран пользователя —
+     без зашитых координат. Самостоятельно захостенная сборка
+     d3-quadtree + d3-dispatch + d3-timer + d3-force, лицензия —
+     assets/vendor/d3-force.LICENSE.txt -->
+<script src="assets/vendor/d3-force.min.js"></script>
+<script>
+"use strict";
+
+// ---------- public-safe project data (метод + метрики, без внутрянки) ----------
+const CAT = {
+  core:      {label:"Метод / ядро",     color:"var(--c-core)"},
+  wow:       {label:"Wow-кейс",          color:"var(--c-wow)"},
+  quality:   {label:"Контроль качества", color:"var(--c-quality)"},
+  platform:  {label:"Платформа",         color:"var(--c-platform)"},
+  automation:{label:"Автоматизация",     color:"var(--c-automation)"},
+  ops:       {label:"Эксплуатация",      color:"var(--c-ops)"},
+};
+
+const P = [
+  { id:"meta-agent", name:"meta-agent", cat:"core", loc:47300,
+    one:"Собственная среда оркестрации ИИ-агентов, в которой построены все остальные проекты.",
+    dem:["Системное мышление: пространства → сессии → пайплайны, а не «попросил код»",
+         "Качество результата агента = качество контекста и инструментов — и я это построил",
+         "15+ внешних систем подключены как инструменты агента"],
+    facts:{"Разработка":"4.5 мес · активно","Коммитов":"82","Код":"~47 300 строк JS","Тесты":"31 набор"},
+    tags:["Метод","Прототип до кода","Интеграции","В эксплуатации"] },
+
+  { id:"family-messenger", name:"family-messenger", cat:"wow", loc:15800,
+    one:"Кроссплатформенный мессенджер на KMP за 9 дней — Android, iOS, Desktop и Web из одного кода.",
+    dem:["Скорость: то, что командой делают кварталами — за девять дней",
+         "shared-contract как защита от рассинхрона между пятью таргетами",
+         "Доведено до эксплуатации: деплой, runbook, install-wizard для не-технаря"],
+    facts:{"Разработка":"9 дней","Коммитов":"63","Код":"~15 800 строк Kotlin","Статус":"задеплоен, используется"},
+    tags:["Kotlin","KMP","Android","Прототип до кода","В эксплуатации","Ежедневно"] },
+
+  { id:"impact-analysis", name:"impact-analysis", cat:"quality", loc:3100,
+    one:"Kotlin CLI, который по diff'у вычисляет, какие UI-тесты реально нужно прогнать.",
+    dem:["Методология, а не везение: этапная приёмка по фактическим цифрам",
+         "Декомпозиция задачи так, чтобы агент не терялся на чужой большой кодовой базе",
+         "Честная работа с краевыми случаями — зафиксированы явно, а не замаскированы"],
+    facts:{"Разработка":"5 дней","Коммитов":"16","Код":"~3 100 строк Kotlin","Проверено на":"реальном Android-проекте"},
+    tags:["Kotlin","Контроль качества","Интеграции"] },
+
+  { id:"gitlab-panel", name:"gitlab-panel", cat:"quality", loc:14200,
+    one:"Панель прозрачности релизов: что дошло до прода и что потерялось между стадиями.",
+    dem:["Доменное моделирование стадий, пакетов и переходов доведено до продукта",
+         "Clean Architecture как входное ТЗ агенту — соблюдена не случайно, а по документу",
+         "Собственные чеклисты ревью и аудит как процедура приёмки работы агента"],
+    facts:{"Разработка":"2.5 мес","Коммитов":"123","Код":"~14 200 строк Python","Тесты":"24 файла · coverage"},
+    ai:"Ревьюит merge request'ы прямо в панели: отдельный сценарий с собственным промптом, замечания приходят вместе с остальной картиной релиза.",
+    tags:["FastAPI","ИИ в продукте","Контроль качества","Интеграции","В эксплуатации"] },
+
+  { id:"doctor", name:"doctor", cat:"quality", loc:2750,
+    one:"Источник-независимое хранилище семейных данных с единой хронологией и ИИ-разбором документов.",
+    dem:["Архитектурная дальновидность: «всеядное ядро» спроектировано до второго источника",
+         "Жёсткие рамки качества агенту: mypy strict + ruff — и код в них укладывается",
+         "ИИ-извлечение из документов встроено внутрь продукта, а не только в разработку"],
+    facts:{"Разработка":"~2 мес","Код":"~2 750 строк Python","Качество":"mypy strict + ruff","Статус":"задеплоен"},
+    ai:"Распознаёт документы в структурированные записи: из присланного файла — готовые поля и показатели, без ручного ввода.",
+    tags:["FastAPI","Контроль качества","ИИ в продукте"] },
+
+  { id:"running-portal", name:"running-portal", cat:"platform", loc:11000,
+    one:"Портал беговой аналитики с ИИ-тренером и полностью автономным синком данных трекера.",
+    dem:["Продуктовое мышление: фичи выстроены как последовательность вопросов пользователя",
+         "Дизайн-макет отдельным шагом до реализации, а не «как получится»",
+         "Автономная работа с недружелюбной внешней авторизацией без участия человека"],
+    facts:{"Разработка":"4 мес","Коммитов":"24","Код":"~11 000 строк Python","Статус":"ежедневное использование"},
+    ai:"Тренер интерпретирует тренировки: что показывают метрики формы, растёт ли результат и что делать дальше.",
+    tags:["FastAPI","ИИ в продукте","Прототип до кода","Ежедневно","В эксплуатации"] },
+
+  { id:"orienteering", name:"orienteering", cat:"platform", loc:18400,
+    one:"Разбор стартов по ориентированию: геопривязка карт, плеер трека, сплиты по КП.",
+    dem:["Ведение агента через нетривиальную предметную математику (геопривязка, Jenks)",
+         "Переиспользование архитектуры running-portal — зрелый инженерный приём",
+         "UX через HTML-прототипы визуализаций до реализации"],
+    facts:{"Разработка":"2 мес","Коммитов":"57","Код":"~18 400 строк","Тесты":"10 наборов"},
+    ai:"Тренер разбирает ошибки на сплитах: где и почему потеряно время на перегоне и как это исправить.",
+    tags:["FastAPI","ИИ в продукте","Шаблон → переиспользование","Прототип до кода","В эксплуатации"] },
+
+  { id:"ikus", name:"ikus.pesc.ru", cat:"automation", loc:970,
+    one:"Автоподача показаний воды и электричества в личный кабинет — без участия человека.",
+    dem:["Автоматизация до состояния «человек не участвует», а не «удобная кнопка»",
+         "Реверс авторизации с TOTP-верификацией",
+         "Тесты внешней интеграции через моки — без флаки-запросов в живой кабинет"],
+    facts:{"Разработка":"4 дня","Код":"~970 строк Python","Статус":"круглосуточно"},
+    tags:["FastAPI","Автоматизация","Интеграции","В эксплуатации"] },
+
+  { id:"meters", name:"meters", cat:"automation", loc:900,
+    one:"Агрегатор «семейства счётчиков»: вода, газ, электричество — один экран, одна кнопка.",
+    dem:["Системное мышление: два источника + агрегатор, источники подменяемы через конфиг",
+         "Размножение решения: один отработанный шаблон → три сервиса за 4 дня",
+         "Доведено до эксплуатации: Docker Compose собирает связку целиком"],
+    facts:{"Разработка":"3 сервиса / 4 дня","Код":"~900 строк Python","Статус":"главный экран"},
+    tags:["FastAPI","Автоматизация","Шаблон → переиспользование","Ежедневно"] },
+
+  { id:"peterburgregiongaz", name:"peterburgregiongaz", cat:"automation", loc:820,
+    one:"Тот же сценарий автоподачи, но для газового кабинета — второй экземпляр шаблона.",
+    dem:["Переиспользование шаблона: при работе с ИИ шаблон дороже кода",
+         "Изоляция поставщик-специфичной логики в отдельном адаптере",
+         "Новый поставщик закрыт за дни, потому что решение спроектировано повторяемым"],
+    facts:{"Разработка":"4 дня · параллельно","Код":"~820 строк Python","Статус":"круглосуточно"},
+    tags:["FastAPI","Автоматизация","Шаблон → переиспользование"] },
+
+  { id:"procboard", name:"procboard", cat:"ops", loc:630,
+    one:"Мини-дашборд, из которого запускаются и мониторятся все остальные сервисы на сервере.",
+    dem:["Чувство меры: 630 строк, без Kubernetes там, где хватает конфига",
+         "Мышление уровня эксплуатации: healthcheck'и, автостарт, аптайм, логи",
+         "Неинвазивный дизайн: управляемые сервисы не знают о панели"],
+    facts:{"Код":"~630 строк Python","Статус":"systemd-сервис","Роль":"управляет остальными"},
+    tags:["Автоматизация","Ежедневно","В эксплуатации"] },
+
+  { id:"github-hram", name:"github-hram", cat:"platform", loc:5041,
+    one:"Публичная AI-собранная витрина инженерных проектов: карта, страницы кейсов и карьерный контекст в одном продукте.",
+    dem:["Превращение результата в продукт: AI-кейсы получили навигацию, объяснение метода и публичный контекст",
+         "Краулабельность как требование: статические страницы, метаданные, JSON-LD и sitemap",
+         "Переиспользуемый формат: одна визуальная система связывает 13 самостоятельных проектов"],
+    facts:{"AI-версия":"1 день","Коммитов":"54","Файлов":"42 tracked","Статус":"GitHub Pages"},
+    tags:["Платформа","Метод","Прототип до кода","В эксплуатации"] },
+
+  { id:"android-ui-renderer-mcp", name:"android-ui-renderer-mcp", cat:"quality", loc:1000,
+    one:"MCP-сервер для быстрого рендера Android XML-интерфейсов и проверки геометрии без эмулятора.",
+    dem:["Скорость обратной связи: агент получает PNG и View Tree после изменения layout",
+         "Проверяемость: точные bounds, состояния View и renderId для повторной инспекции",
+         "Инженерная осторожность: Robolectric worker перезапускается при изменении исходников"],
+    facts:{"Разработка":"1 день · MVP","Коммитов":"9","Код":"~1 000 строк Kotlin","Тесты":"3 набора"},
+    tags:["Kotlin","MCP","Контроль качества","Android"] },
+
+  { id:"allure-testops-mcp", name:"allure-testops-mcp", cat:"quality", loc:1392,
+    one:"MCP-сервер для управления тест-кейсами, сценариями и связями в Allure TestOps из AI-агента.",
+    dem:["Интеграционная полнота: поиск, CRUD тест-кейсов, сценарии, issue-связи и custom fields",
+         "Безопасная автоматизация: API-ошибки нормализуются, токен обменивается и кэшируется",
+         "Аудируемость: ответы инструментов можно сохранять в timestamped JSON-артефакты"],
+    facts:{"Разработка":"1 день · MVP","Коммитов":"1","Код":"~1 392 строки JS","Тесты":"2 файла"},
+    tags:["JavaScript","MCP","Контроль качества","Allure TestOps"] },
+
+  { id:"career-portal", name:"career-portal", cat:"platform", loc:6212,
+    one:"Личный карьерный портал: база знаний, вакансии и генерация резюме с помощью ИИ для двух пользователей.",
+    dem:["Продуктовое мышление: карьерные данные собраны в живую базу, а не в один неизменяемый файл",
+         "Переиспользование: одна база знаний превращается в резюме под разные роли и вакансии",
+         "Реальная эксплуатация: 7 мест работ и 24 проекта автора, 5 мест работ супруги"],
+    facts:{"Разработка":"активно","Коммитов":"26","Код":"~6 200 строк Python","Пользователи":"2"},
+    ai:"ИИ проверяет полноту базы, задаёт уточняющие вопросы, разбирает загруженные резюме и собирает версию под конкретную вакансию.",
+    tags:["FastAPI","ИИ в продукте","Платформа","Ежедневно"] },
+
+  { id:"gdebenz", name:"gdebenz", cat:"automation", loc:2742,
+    one:"Личный портал «ехать за АИ-95 или ждать»: агрегирует данные избранных АЗС в одно объяснимое решение.",
+    dem:["Продуктовое мышление: сырые статусы АЗС превращены в одно решение с причиной",
+         "Работа с ненадёжным источником: явные правила доверия агрегату против одиночной отметки",
+         "Доведено до эксплуатации за 1 день: web и worker разделены, общая persistent SQLite"],
+    facts:{"Разработка":"1 день","Коммитов":"6","Код":"~2 700 строк Python","АЗС":"3"},
+    tags:["FastAPI","Автоматизация","Rule-based решения","Личный сценарий"] },
+];
+
+// meaningful constellation links only
+const EDGES = [
+  {a:"running-portal", b:"orienteering", type:"lineage"},   // template reuse
+  {a:"ikus", b:"meters", type:"lineage"},                   // counter family
+  {a:"peterburgregiongaz", b:"meters", type:"lineage"},
+  {a:"meta-agent", b:"family-messenger", type:"forge"},     // forged in the core
+  {a:"meta-agent", b:"gitlab-panel", type:"forge"},
+  {a:"meta-agent", b:"running-portal", type:"forge"},
+  {a:"meta-agent", b:"impact-analysis", type:"forge"},
+  {a:"meta-agent", b:"procboard", type:"forge"},
+  {a:"meta-agent", b:"github-hram", type:"forge"},
+  {a:"meta-agent", b:"doctor", type:"forge"},
+  {a:"meta-agent", b:"ikus", type:"forge"},
+  {a:"meta-agent", b:"android-ui-renderer-mcp", type:"forge"},
+  {a:"meta-agent", b:"allure-testops-mcp", type:"forge"},
+  {a:"meta-agent", b:"career-portal", type:"forge"},
+  {a:"meta-agent", b:"gdebenz", type:"forge"},
+];
+
+const byId = Object.fromEntries(P.map(p=>[p.id,p]));
+const reduce = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+// radius by scale
+const locs = P.map(p=>p.loc);
+const rmin=Math.min(...locs), rmax=Math.max(...locs);
+function radius(loc){ const t=(Math.sqrt(loc)-Math.sqrt(rmin))/(Math.sqrt(rmax)-Math.sqrt(rmin)); return 7+t*15; }
+function catColor(cat){ return getComputedStyle(document.documentElement).getPropertyValue(CAT[cat].color.replace('var(','').replace(')','')).trim(); }
+
+const NS="http://www.w3.org/2000/svg";
+const gEdges=document.getElementById("edges");
+const gNodes=document.getElementById("nodes");
+const svg=document.getElementById("sky");
+
+// ---- размер узла + реальная ширина подписи (не оценка по числу символов —
+// измеряем фактический рендер шрифта, чтобы граница созвездия точно не резала текст) ----
+const measureCtx=document.createElement("canvas").getContext("2d");
+function labelHalfWidth(name){
+  measureCtx.font="500 12px 'IBM Plex Mono', ui-monospace, monospace";
+  return measureCtx.measureText(name).width/2;
+}
+P.forEach(p=>{
+  p.r=radius(p.loc);
+  p.haloR=p.r*2.7;                                   // внешний ореол узла
+  p.halfW=Math.max(p.haloR, labelHalfWidth(p.name)+4); // половина ширины «занятого» места
+  p.topExt=p.haloR+4;                                  // запас сверху
+  p.botExt=p.r+17+9;                                   // подпись под узлом + строка текста
+});
+
+// ---- построение DOM один раз; позиции проставляются раскладкой ниже ----
+const els={};
+EDGES.forEach(e=>{
+  const l=document.createElementNS(NS,"line");
+  l.setAttribute("class","edge "+e.type);
+  l.dataset.a=e.a; l.dataset.b=e.b;
+  gEdges.appendChild(l);
+  e.el=l;
+});
+
+P.forEach(p=>{
+  const col=catColor(p.cat);
+  const g=document.createElementNS(NS,"g");
+  g.setAttribute("class","node"); g.setAttribute("tabindex","0");
+  g.setAttribute("role","button");
+  g.setAttribute("aria-label",p.name+" — "+p.one);
+  g.dataset.id=p.id;
+
+  const glow=document.createElementNS(NS,"circle");
+  glow.setAttribute("r",p.haloR); glow.setAttribute("fill",col); glow.setAttribute("opacity",".13");
+  const halo=document.createElementNS(NS,"circle");
+  halo.setAttribute("r",p.r*1.6); halo.setAttribute("fill",col); halo.setAttribute("opacity",".26");
+  halo.setAttribute("class","halo");
+  const core=document.createElementNS(NS,"circle");
+  core.setAttribute("r",p.r); core.setAttribute("fill", p.cat==="core"?col:"var(--star)");
+  core.setAttribute("stroke",col); core.setAttribute("stroke-width", p.cat==="core"?0:1.4);
+
+  const rings=[];
+  if(p.cat==="core"){
+    [p.r*2.1, p.r*2.9].forEach((rr,idx)=>{
+      const ring=document.createElementNS(NS,"circle");
+      ring.setAttribute("r",rr);
+      ring.setAttribute("fill","none"); ring.setAttribute("stroke",col);
+      ring.setAttribute("stroke-width","1"); ring.setAttribute("opacity",idx?".12":".2");
+      g.appendChild(ring); rings.push(ring);
+    });
+  }
+
+  const lbl=document.createElementNS(NS,"text");
+  lbl.setAttribute("class","lbl"); lbl.textContent=p.name;
+
+  g.appendChild(glow); g.appendChild(halo); g.appendChild(core); g.appendChild(lbl);
+  gNodes.appendChild(g);
+  els[p.id]={g,glow,halo,core,lbl,rings};
+
+  g.addEventListener("click",()=>select(p.id));
+  g.addEventListener("keydown",ev=>{ if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();select(p.id);} });
+  g.addEventListener("mouseenter",()=>hover(p.id,true));
+  g.addEventListener("mouseleave",()=>hover(p.id,false));
+});
+
+function applyPositions(){
+  P.forEach(p=>{
+    const e=els[p.id];
+    e.glow.setAttribute("cx",p.x); e.glow.setAttribute("cy",p.y);
+    e.halo.setAttribute("cx",p.x); e.halo.setAttribute("cy",p.y);
+    e.core.setAttribute("cx",p.x); e.core.setAttribute("cy",p.y);
+    e.rings.forEach(r=>{ r.setAttribute("cx",p.x); r.setAttribute("cy",p.y); });
+    e.lbl.setAttribute("x",p.x); e.lbl.setAttribute("y",p.y+p.r+17);
+    e.g.style.transformOrigin=p.x+"px "+p.y+"px";
+  });
+  EDGES.forEach(e=>{
+    const a=byId[e.a], b=byId[e.b];
+    e.el.setAttribute("x1",a.x); e.el.setAttribute("y1",a.y);
+    e.el.setAttribute("x2",b.x); e.el.setAttribute("y2",b.y);
+  });
+}
+
+// ---------- динамическая раскладка под экран пользователя (d3-force) ----------
+// Координаты нигде не зашиты: при каждом запуске считаем свободную область
+// экрана (за вычетом шапки/фильтров/боковых полей — «других областей страницы»)
+// и раскладываем граф внутри неё физической симуляцией, meta-agent — в центре.
+// Границы меряются по факту (bounding rect шапки и строки фильтров), а не
+// константой на глаз: строка фильтров может занять одну или несколько строк
+// в зависимости от ширины окна и числа тегов — фиксированная высота либо
+// оставляла лишнее пустое место, либо не спасала от наезда на реальные чипы.
+function safeRect(){
+  const narrow=innerWidth<=720;
+  const SIDE=narrow?14:30;
+  const GAP=16; // зазор от реального края шапки/фильтров
+  const headBottom=document.querySelector(".head").getBoundingClientRect().bottom;
+  const filtTop=document.querySelector(".filters").getBoundingClientRect().top;
+  const y0=headBottom+GAP;
+  const y1=Math.max(y0+120, filtTop-GAP);
+  return { x0:SIDE, y0, x1:Math.max(SIDE+120,innerWidth-SIDE), y1 };
+}
+
+// Жёсткая граница безопасной области. Важно: d3 применяет силы как приращение
+// скорости и лишь ПОСЛЕ этого сдвигает x/y на неё — если здесь только
+// подправить x/y, на следующем шаге интеграции узел снова вытолкнет той же
+// vx/vy обратно за край. Поэтому вместе с позицией гасим и «уходящую наружу»
+// составляющую скорости — иначе на тесных экранах узлы вылезали за границы.
+function boundsForce(rect){
+  let nodes;
+  function force(){
+    for(const p of nodes){
+      const lo=rect.x0+p.halfW, hi=rect.x1-p.halfW;
+      if(p.x<lo){ p.x=lo; if(p.vx<0) p.vx=0; }
+      else if(p.x>hi){ p.x=hi; if(p.vx>0) p.vx=0; }
+      const top=rect.y0+p.topExt, bot=rect.y1-p.botExt;
+      if(p.y<top){ p.y=top; if(p.vy<0) p.vy=0; }
+      else if(p.y>bot){ p.y=bot; if(p.vy>0) p.vy=0; }
+    }
+  }
+  force.initialize=n=>{ nodes=n; };
+  return force;
+}
+
+function runLayout(){
+  const rect=safeRect();
+  const cx=(rect.x0+rect.x1)/2, cy=(rect.y0+rect.y1)/2;
+  const span=Math.min(rect.x1-rect.x0, rect.y1-rect.y0);
+  const meta=byId["meta-agent"];
+
+  // сид: держим текущие позиции (плавный переход при ресайзе), а для первого
+  // запуска раскладываем узлы по кругу вокруг будущего центра meta-agent
+  const others=P.filter(p=>p.id!=="meta-agent");
+  others.forEach((p,i)=>{
+    if(typeof p.x==="number") return;
+    const a=(i/others.length)*Math.PI*2;
+    p.x=cx+Math.cos(a)*span*0.28; p.y=cy+Math.sin(a)*span*0.28;
+  });
+  meta.x=cx; meta.y=cy; meta.fx=cx; meta.fy=cy;
+
+  const links=EDGES.map(e=>({source:e.a, target:e.b, type:e.type}));
+  const sim=d3.forceSimulation(P)
+    .force("charge", d3.forceManyBody().strength(-span*0.85))
+    .force("link", d3.forceLink(links).id(d=>d.id)
+      .distance(l=>span*(l.type==="forge"?0.24:0.17))
+      .strength(0.55))
+    .force("collide", d3.forceCollide().radius(p=>p.halfW*1.05).strength(0.9).iterations(3))
+    .stop();
+  for(let i=0;i<400;i++) sim.tick();
+
+  // Растягиваем получившуюся форму (она у charge+link почти круглая) под
+  // фактическую прямоугольную безопасную область — иначе на широком экране
+  // созвездие остаётся кружком посередине, а сверху/снизу пусто. Тянем
+  // раздельно по четырём сторонам от meta-agent, чтобы учесть асимметрию
+  // подписи (она снизу от узла) и не полагаться на угадывание пропорций.
+  let reachL=1,reachR=1,reachU=1,reachD=1;
+  for(const p of others){
+    const dx=p.x-cx, dy=p.y-cy;
+    if(dx<0) reachL=Math.max(reachL,-dx+p.halfW); else reachR=Math.max(reachR,dx+p.halfW);
+    if(dy<0) reachU=Math.max(reachU,-dy+p.topExt); else reachD=Math.max(reachD,dy+p.botExt);
+  }
+  // верхнего предела нет: экран должен заполняться до конца, а не оставлять
+  // пустоту с одной стороны — итоговые наложения от растяжения снимает
+  // релаксация коллизий и жёсткий clamp ниже
+  const clampScale=s=>Math.max(0.6,s);
+  const scaleL=clampScale((cx-rect.x0)/reachL), scaleR=clampScale((rect.x1-cx)/reachR);
+  const scaleU=clampScale((cy-rect.y0)/reachU), scaleD=clampScale((rect.y1-cy)/reachD);
+  for(const p of others){
+    const dx=p.x-cx, dy=p.y-cy;
+    p.x=cx+dx*(dx<0?scaleL:scaleR);
+    p.y=cy+dy*(dy<0?scaleU:scaleD);
+  }
+
+  // финальный проход — только коллизии и границы, убирает остаточные наложения
+  // подписей, которые могло внести растяжение выше
+  meta.fx=cx; meta.fy=cy;
+  const sim2=d3.forceSimulation(P)
+    .force("collide", d3.forceCollide().radius(p=>p.halfW*1.05+3).strength(1).iterations(3))
+    .force("bounds", boundsForce(rect))
+    .stop();
+  for(let i=0;i<300;i++) sim2.tick();
+
+  // финальный жёсткий clamp: гарантия «не наезжает на другие области страницы»
+  // не должна зависеть от порядка применения сил внутри símуляции (коллизии
+  // в тесном пространстве способны на пару кадров вытолкнуть узел за clamp
+  // из boundsForce ещё до следующей итерации) — здесь позиция подрезается
+  // окончательно и без исключений.
+  for(const p of P){
+    const lo=rect.x0+p.halfW, hi=rect.x1-p.halfW;
+    p.x=Math.min(Math.max(p.x,lo),hi);
+    const top=rect.y0+p.topExt, bot=rect.y1-p.botExt;
+    p.y=Math.min(Math.max(p.y,top),bot);
+  }
+
+  svg.setAttribute("viewBox","0 0 "+innerWidth+" "+innerHeight);
+  applyPositions();
+}
+
+// ---- ignition: волна появления от ядра наружу (только при первой раскладке) ----
+function startEntrance(){
+  if(reduce) return;
+  const meta=byId["meta-agent"];
+  P.forEach(p=>{
+    const {g,halo}=els[p.id];
+    g.style.opacity="0";
+    g.style.transform="scale(.4)";
+    g.style.transition="opacity .6s ease, transform .6s cubic-bezier(.22,1.2,.36,1)";
+    const d=Math.hypot(p.x-meta.x,p.y-meta.y);
+    setTimeout(()=>{
+      // если фильтр уже оборвал intro (см. applyFilters) — g.style.transition
+      // пуст, это сигнал ничего не трогать: разбуженный по таймеру reveal
+      // не должен заново поставить style.opacity="1" поверх .node.dim
+      if(g.style.transition==="") return;
+      g.style.opacity = g.classList.contains("dim") ? "" : "1";
+      g.style.transform="scale(1)";
+    }, 260+d*1.4);
+    // по окончании появления снимаем инлайновые стили: иначе style="opacity:1"
+    // перебивает класс .node.dim и фильтр визуально ничего не делает
+    g.addEventListener("transitionend",function done(ev){
+      if(ev.target!==g || ev.propertyName!=="opacity") return;
+      g.style.opacity=""; g.style.transform=""; g.style.transition="";
+      g.removeEventListener("transitionend",done);
+    });
+    halo.style.animation=`tw ${3+Math.random()*3}s ease-in-out ${Math.random()*3}s infinite`;
+  });
+}
+
+// Первый запуск раскладки — ниже, после того как построены строка фильтров
+// и легенда: safeRect() меряет их реальную высоту (см. комментарий там),
+// а до появления чипов в DOM это ещё не настоящая высота футера.
+
+// twinkle keyframes
+const kf=document.createElement("style");
+kf.textContent="@keyframes tw{0%,100%{opacity:.26}50%{opacity:.42}}";
+document.head.appendChild(kf);
+
+// ---------- hover: light up connected constellation ----------
+function hover(id,on){
+  if(activeFilters.size) return; // don't fight the filter state
+  document.querySelectorAll(".edge").forEach(e=>{
+    const connected = e.dataset.a===id || e.dataset.b===id;
+    e.style.opacity = on ? (connected?"":"") : "";
+    if(on && connected){ e.style.strokeWidth = e.classList.contains("lineage")?"2":"1.6"; }
+    else { e.style.strokeWidth=""; }
+  });
+}
+
+// ---------- selection / panel ----------
+const panel=document.getElementById("panel");
+const pbody=document.getElementById("pbody");
+const hint=document.getElementById("hint");
+let selId=null;
+
+function select(id){
+  const p=byId[id]; if(!p) return;
+  selId=id;
+  document.querySelectorAll(".node").forEach(n=>n.classList.toggle("sel",n.dataset.id===id));
+  const col=CAT[p.cat].color;
+  const facts=Object.entries(p.facts).map(([k,v])=>`<div><div class="k">${k}</div><div class="v">${v}</div></div>`).join("");
+  const dem=p.dem.map(d=>`<li>${d}</li>`).join("");
+  const tags=p.tags.map(t=>`<span class="ptag">${t}</span>`).join("");
+  pbody.innerHTML=`
+    <p class="p-cat" style="color:${col}">${CAT[p.cat].label}</p>
+    <h2 class="p-name">${p.name}</h2>
+    <p class="p-one">${p.one}</p>
+    <p class="p-h">Что демонстрирует</p>
+    <ul class="p-dem">${dem}</ul>
+    ${p.ai?`<div class="p-ai" style="border-left-color:${col}">
+      <p class="p-ai-h" style="color:${col}">ИИ в продукте</p>
+      <p>${p.ai}</p>
+    </div>`:""}
+    <p class="p-h">Факты</p>
+    <div class="facts">${facts}</div>
+    <p class="p-h">Теги</p>
+    <div class="ptags">${tags}</div>
+    <a class="p-link" href="projects/${p.id}.html">Открыть полную страницу →</a>
+    <p class="p-note">Публичная витрина: метод и метрики, без внутренних данных.</p>`;
+  panel.classList.add("open"); panel.setAttribute("aria-hidden","false");
+  if(hint) hint.style.opacity="0";
+}
+function closePanel(){
+  panel.classList.remove("open"); panel.setAttribute("aria-hidden","true");
+  document.querySelectorAll(".node").forEach(n=>n.classList.remove("sel")); selId=null;
+}
+document.getElementById("close").addEventListener("click",closePanel);
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closePanel(); });
+document.getElementById("sky").addEventListener("click",e=>{ if(e.target.id==="sky") closePanel(); });
+
+// ---------- filters ----------
+const allTags=[...new Set(P.flatMap(p=>p.tags))];
+const order=["Метод","Контроль качества","Шаблон → переиспользование","Прототип до кода","ИИ в продукте","Kotlin","KMP","FastAPI","Автоматизация","Интеграции","Ежедневно","В эксплуатации"];
+allTags.sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+const activeFilters=new Set();
+const fbox=document.getElementById("filters");
+allTags.forEach(t=>{
+  const c=document.createElement("button");
+  c.className="chip"; c.setAttribute("aria-pressed","false"); c.textContent=t;
+  // Один активный тег за раз: клик заменяет предыдущий выбор, а не добавляет
+  // к нему по ИЛИ. При накоплении тегов по ИЛИ подсвеченное множество быстро
+  // «насыщалось» и после 2-3 разных тегов переставало заметно меняться —
+  // выглядело так, будто фильтр вообще не реагирует на выбор.
+  c.addEventListener("click",()=>{
+    const wasActive=activeFilters.has(t);
+    activeFilters.clear();
+    fbox.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed","false"));
+    if(!wasActive){ activeFilters.add(t); c.setAttribute("aria-pressed","true"); }
+    applyFilters();
+  });
+  fbox.appendChild(c);
+});
+function applyFilters(){
+  const active=activeFilters.size>0;
+  document.querySelectorAll(".node").forEach(n=>{
+    // Клик по фильтру обрывает ещё не доигравшую анимацию появления: пока она
+    // не закончилась, у узла инлайн style="opacity:1", который по специфичности
+    // перебивает класс .node.dim — фильтр тогда выглядит так, будто ничего не
+    // делает для узлов, «не успевших появиться». Взаимодействие с фильтром —
+    // явный сигнал, что decorative intro можно оборвать прямо сейчас.
+    n.style.opacity=""; n.style.transform=""; n.style.transition="";
+    const p=byId[n.dataset.id];
+    const match=!active || p.tags.some(t=>activeFilters.has(t));
+    n.classList.toggle("dim",active && !match);
+  });
+  document.querySelectorAll(".edge").forEach(e=>{
+    const on = !active || ( byId[e.dataset.a].tags.some(t=>activeFilters.has(t)) && byId[e.dataset.b].tags.some(t=>activeFilters.has(t)) );
+    e.classList.toggle("dim",active && !on);
+  });
+}
+
+// ---------- legend ----------
+const lg=document.getElementById("legend");
+Object.values(CAT).forEach(c=>{
+  const d=document.createElement("div"); d.className="lg";
+  d.innerHTML=`<span>${c.label}</span><i style="color:${c.color};background:${c.color}"></i>`;
+  lg.appendChild(d);
+});
+
+// ---------- первый запуск раскладки ----------
+// только теперь у .filters/.legend есть реальная финальная высота в DOM —
+// safeRect() внутри runLayout() опирается именно на неё.
+runLayout();
+startEntrance();
+
+// пересчёт при ресайзе (debounce, чтобы не гонять симуляцию на каждый пиксель)
+let resizeTimer=null;
+addEventListener("resize",()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer=setTimeout(runLayout,180);
+});
+
+// догрузка веб-шрифта может слегка изменить реальную ширину подписей —
+// пересчитываем halfW точными метриками и один раз мягко доукладываем граф
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(()=>{
+    P.forEach(p=>{ p.halfW=Math.max(p.haloR, labelHalfWidth(p.name)+4); });
+    runLayout();
+  });
+}
+
+// ---------- показать, что звёзды кликабельны ----------
+// статичный граф читается как картинка; короткая волна от ядра наружу
+// сообщает об интерактивности быстрее, чем текстовая подсказка
+(function(){
+  if(reduce) return;                       // при prefers-reduced-motion — тишина
+  var touched=false;
+  ["pointerdown","keydown","wheel"].forEach(function(ev){
+    addEventListener(ev,function(){ touched=true; },{once:true,passive:true});
+  });
+  var meta=byId["meta-agent"];
+  var order=P.slice().sort(function(a,b){
+    return Math.hypot(a.x-meta.x,a.y-meta.y)-Math.hypot(b.x-meta.x,b.y-meta.y);
+  });
+  function wave(){
+    if(touched) return;
+    order.forEach(function(p,i){
+      setTimeout(function(){
+        var g=document.querySelector('.node[data-id="'+p.id+'"]');
+        if(!g||touched) return;
+        g.style.transition=""; g.style.transform="";   // инлайн от анимации появления перебил бы пульс
+        g.style.transformOrigin=p.x+"px "+p.y+"px";
+        g.classList.add("pulse");
+        setTimeout(function(){ g.classList.remove("pulse"); },900);
+      }, i*80);
+    });
+  }
+  setTimeout(wave,1900);                   // после того, как узлы зажглись
+  setTimeout(wave,8000);                   // второй раз — если так и не тронули
+})();
+
+// ---------- background starfield ----------
+const cv=document.getElementById("bg"), cx=cv.getContext("2d");
+let W,H,stars;
+function resize(){
+  W=cv.width=innerWidth*devicePixelRatio; H=cv.height=innerHeight*devicePixelRatio;
+  cv.style.width=innerWidth+"px"; cv.style.height=innerHeight+"px";
+  stars=Array.from({length:Math.min(240,Math.floor(innerWidth*innerHeight/6500))},()=>({
+    x:Math.random()*W, y:Math.random()*H, z:Math.random()*.7+.3,
+    r:(Math.random()*1.1+.2)*devicePixelRatio, tw:Math.random()*Math.PI*2
+  }));
+}
+resize(); addEventListener("resize",resize);
+let t=0;
+function draw(){
+  cx.clearRect(0,0,W,H);
+  for(const s of stars){
+    const a=.35+.35*Math.sin(t*.6+s.tw);
+    cx.beginPath(); cx.arc(s.x,s.y,s.r,0,7); 
+    cx.fillStyle="rgba(200,220,255,"+(a*s.z).toFixed(3)+")"; cx.fill();
+    if(!reduce){ s.y+=s.z*.06*devicePixelRatio; if(s.y>H)s.y=0; }
+  }
+  t+=.016; requestAnimationFrame(draw);
+}
+if(reduce){ // static single paint
+  for(const s of stars){cx.beginPath();cx.arc(s.x,s.y,s.r,0,7);cx.fillStyle="rgba(200,220,255,"+(.5*s.z).toFixed(3)+")";cx.fill();}
+} else draw();
+
+// hide hint after a while
+if(!reduce) setTimeout(()=>{ if(!selId && hint) hint.style.opacity=".0"; }, 6000);
+</script>
+</body>
+</html>

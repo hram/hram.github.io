@@ -1,0 +1,42 @@
+name: Храмов Евгений
+title: null
+theme: just-the-docs
+
+url: https://hram.github.io
+
+plugins:
+  - jekyll-sitemap
+
+# исходники постановок и эталонов — не для публичной витрины
+exclude:
+  - prompts/
+  - Gemfile
+  - Gemfile.lock
+  - radar/error.html # заглушка «PAGE NOT FOUND» из сборки радара — не страница сайта
+
+callouts_level: quiet # or loud
+callouts:
+  highlight:
+    color: yellow
+  important:
+    title: Important
+    color: blue
+  new:
+    title: New
+    color: green
+  note:
+    title: Note
+    color: purple
+  warning:
+    title: Warning
+    color: red
+
+nav_external_links:
+  - title: Созвездие AI-проектов
+    url: /project-galaxy.html
+    hide_icon: true # внутренняя страница сайта, а не внешний ресурс
+    opens_in_new_tab: false
+  - title: Мой Tech Radar
+    url: https://hram.github.io/radar/index.html
+    hide_icon: false # set to true to hide the external link icon - defaults to false
+    opens_in_new_tab: true # set to true to open this link in a new tab - defaults to false

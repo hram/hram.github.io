@@ -1,0 +1,539 @@
+{
+  "title": "Мой тех радар",
+  "quadrants": ["Языки и библиотеки", "Сервис", "Подход", "Инструменты"],
+  "rings": ["adopt", "trial", "assess", "hold"],
+  "blips": [
+    {
+      "name": "Kotlin",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Основной язык программирования"
+    },
+    {
+      "name": "Marathon",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Используется во всех проектах для запуска UI тестов."
+    },
+    {
+      "name": "Docker",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Система сборки в GitlabCI и запуск UI тестов"
+    },
+    {
+      "name": "Python",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Скрипты в GitlabCI для работы с Jira и Telegram"
+    },
+    {
+      "name": "Bash",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Небольшая часть скриптов в GitlabCI"
+    },
+    {
+      "name": "Ktlint",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Статический анализатор. Все проекты обязательно проверяются на каждый MR"
+    },
+    {
+      "name": "Kotlin DSL",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Полностью перешел с groovy скриптов на kts"
+    },
+    {
+      "name": "Java",
+      "quadrant": "Языки и библиотеки",
+      "ring": "hold",
+      "isNew": true,
+      "description": "До Kotlin велась разработка"
+    },
+	{
+      "name": "C#",
+      "quadrant": "Языки и библиотеки",
+      "ring": "hold",
+      "isNew": true,
+      "description": "Было два проекта на Xamarin. Один активно развивался. Второй был переписан на Kotlin"
+    },
+    {
+      "name": "C++",
+      "quadrant": "Языки и библиотеки",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Использовал в банковском приложении для подключения нативной библиотеки с помощью Android NDK"
+    },
+    {
+      "name": "NDK",
+      "quadrant": "Языки и библиотеки",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Набор библиотек и инструментов для написания и использования нативного кода написанного на С++"
+    },
+    {
+      "name": "Ktor",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Асинхронная платформа для создания микросервисов. Реализовал два микросервиса на Kotlin"
+    },
+    {
+      "name": "Firebase Analytics",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Сервис для работы с аналитикой"
+    },
+    {
+      "name": "Firebase Crashlytics",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Основная система сбора информации о крашах и non fatal-ах"
+    },
+    {
+      "name": "Firebase App Distribution",
+      "quadrant": "Сервис",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Использовал для публикации тестовых сборок. Пришлось отказаться после введения санкций. Реализовал свой сервис."
+    },
+    {
+      "name": "Firebase Cloud Messaging",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Основной сервис для отправки push-уведомлений"
+    },
+    {
+      "name": "Firebase Remote Config",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Сервис для хранения некоторых настроек приложения, использую если нет альтернативы"
+    },
+    {
+      "name": "Acrarium",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false, 
+      "description": "Развернул и настроил аналог Firebase Crashlytics для сбора крешей только selfhosted"
+    },
+    {
+      "name": "Weblate",
+      "quadrant": "Сервис",
+      "ring": "hold",
+      "isNew": false, 
+      "description": "На одной из работ развернул и настроил сервис для локализации приложений. Сейчас нет необходимости"
+    },
+    {
+      "name": "OpenSTF ",
+      "quadrant": "Сервис",
+      "ring": "hold",
+      "isNew": false, 
+      "description": "На одной из работ развернул и настроил ферму тестовых устройств"
+    },
+    {
+      "name": "Telegram",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false, 
+      "description": "Использую для рассылки уведомлений о доступности новой сборки с релиз ноутсами и ссылкой на скачивание"
+    },
+    {
+      "name": "SOTI",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false, 
+      "description": "MDM система используется для деплоя apk. Также используем для управления устройствами и скачивания логов"
+    },
+    {
+      "name": "Marathon Cloud",
+      "quadrant": "Сервис",
+      "ring": "assess",
+      "isNew": false, 
+      "description": "Сервис для запуска UI-тестов. Получал доступ и настраивал запуск."
+    },
+    {
+      "name": "Sonatype Nexus",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false, 
+      "description": "Сервис для хранения артефактов, проксирующий репозиторий. После введения санкций использую как прокси и настраивал деплой/хранение релизов"
+    },
+    {
+      "name": "MinIO",
+      "quadrant": "Сервис",
+      "ring": "adopt",
+      "isNew": false, 
+      "description": "Сервис для хранения артефактов. Использую в ktor микросервисе для деплоя и хранение релизов"
+    },
+    {
+      "name": "Sonarqube",
+      "quadrant": "Сервис",
+      "ring": "hold",
+      "isNew": false, 
+      "description": "Статический анализатор кода"
+    },
+    {
+      "name": "Google Play Console",
+      "quadrant": "Сервис",
+      "ring": "hold",
+      "isNew": false, 
+      "description": "Использовал для публикации приложений и организации внутреннего тестирования"
+    },
+    {
+      "name": "TestRail",
+      "quadrant": "Сервис",
+      "ring": "hold",
+      "isNew": false,
+      "description": "TMS для автоматизации тестирования.  Делал автоматическое создание тествейсов и интегрировал с CI для запуска тестов и репорта результата прогона"
+    },
+    {
+      "name": "Многомодульная архитектура",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Разбиение кодовой базы на независимые Gradle-модули помогает увеличивать связность и уменьшать зацепление"
+    },
+    {
+      "name": "Single Activity",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Переход от Activity к фрагментам"
+    },
+    {
+      "name": "MVVM",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Подход для реактивного связывания UI с логикой на базе ViewModel"
+    },
+    {
+      "name": "MVI",
+      "quadrant": "Подход",
+      "ring": "assess",
+      "isNew": true,
+      "description": "Изучаю в качестве альтернативы MVVM для перехода на Jetpack Compose"
+    },
+    {
+      "name": "MVP",
+      "quadrant": "Подход",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Устаревший подход разделения логики Presentation слоя. Использовал MoxyMVP до того как Google предложил реализацию MVVM"
+    },
+    {
+      "name": "Unit testing",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Использую там где нет UI тестов"
+    },
+    {
+      "name": "UI testing",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Использую UI тесты на всех проектах. Весь новый код покрывается тестами до передачи в тестирование."
+    },
+    {
+      "name": "Параллельный запуск UI-тестов",
+      "quadrant": "Подход",
+      "ring": "assess",
+      "isNew": false,
+      "description": "Было несколько заходов на двух работах, но не позволяла инфраструктура"
+    },
+    {
+      "name": "Демо приложение",
+      "quadrant": "Подход",
+      "ring": "hold",
+      "isNew": false,
+      "description": "На прошлой работе внедрил демо приложение для демонстрации работы компонентов."
+    },
+    {
+      "name": "Dependency injection",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Используется на всех проектах Dagger или Koin. Я предпочитаю Koin"
+    },
+    {
+      "name": "Feature-toggle",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Все новые доработки выпускаются в выключенном состоянии с возможностью включения по требованию"
+    },
+    {
+      "name": "Scrum",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Использую и помогаю внедрять. Прошел курсы Scrum мастера"
+    },
+    {
+      "name": "Ревью кода",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Вливание кода только через создание МР и проведение ревью кода"
+    },
+    {
+      "name": "Автоматические проверки на МР",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "На каждый МР запускаются статические анализаторы и тесты. МР можно влить только если проверки успешны"
+    },
+    {
+      "name": "Разделение разработки от публикации",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Процесс разработки разделен от процесса публикации. Введены этапы develop, alpha, beta и prod"
+    },
+    {
+      "name": "Постепенная раскатка обновлений",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Отдельная группа тестовых пользователей. Постепенное увеличение количества пользователей."
+    },
+    {
+      "name": "Clean architecture",
+      "quadrant": "Подход",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Набор рекомендаций к построению архитектуры приложения. Использую без фанатизма. Допускаю 2 слоя вместо трех"
+    },
+    {
+      "name": "GitlabCI",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Активно использую на текущей работе. Настройка скриптов полностью на мне."
+    },
+    {
+      "name": "TeamCity",
+      "quadrant": "Инструменты",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Активно использовал на двух прошлых работах. Настройка скриптов была полностью на мне. На одной из работ внедрял и админил."
+    },
+    {
+      "name": "Jenkins",
+      "quadrant": "Инструменты",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Активно использовал на позапрошлой работе. Админил и настраивал скрипты"
+    },
+    {
+      "name": "Jira",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Система управления тасками, сторями и эпиками. Так же используется для организации Scrum."
+    },
+    {
+      "name": "Redmine",
+      "quadrant": "Инструменты",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Система управления тасками, сторями и эпиками. Использовал на одной из работ."
+    },
+    {
+      "name": "MantisBT",
+      "quadrant": "Инструменты",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Система управления тасками, сторями и эпиками. Использовал на одной из работ."
+    },
+    {
+      "name": "Confluence",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Всю документацию по проекту веду в Confluence"
+    },
+    {
+      "name": "Charles",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Локальный прокси для отладки и тестирования"
+    },
+    {
+      "name": "Fiddler",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Локальный прокси для отладки и тестирования"
+    },
+    {
+      "name": "Android studio",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Основная среда разработки"
+    },
+    {
+      "name": "IntelliJ IDEA",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Среда для разработки бекенда на kotlin"
+    },
+    {
+      "name": "Visual Studio Code",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Использую для написания и отладки Python скриптов"
+    },
+    {
+      "name": "Stetho",
+      "quadrant": "Инструменты",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Многофункциональный инстумен для отладки Android приложений (https://github.com/facebook/stetho)"
+    },
+    {
+      "name": "PostgreSQL",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Объектно-реляционная система управления базами данных. Использую в Ktor микросервисах"
+    },
+    {
+      "name": "Git",
+      "quadrant": "Инструменты",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Распределённая система управления версиями. Очень редко используется напрямую. Обычно в студии"
+    },
+    {
+      "name": "Subversion",
+      "quadrant": "Инструменты",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Централизованная система управления версиями. Использовал на одной из работ"
+    },
+    {
+      "name": "Glide",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Библиотека для работы с изображениями"
+    },
+    {
+      "name": "Dagger",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Библиотека для внедрения зависимостей (Dependency injection)"
+    },
+    {
+      "name": "Koin",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Библиотека для внедрения зависимостей (Dependency injection)"
+    },
+    {
+      "name": "Kaspresso",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Фреймворк для UI-тестирования на базе Espresso и UI Automator"
+    },
+    {
+      "name": "Kotlin coroutines",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Легковестный фреймворк для асинхронного программирования"
+    },
+    {
+      "name": "RxJava",
+      "quadrant": "Языки и библиотеки",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Фреймворк реализующий термины реактивного программирования"
+    },
+    {
+      "name": "OkHttp",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Сетевой клиент"
+    },
+    {
+      "name": "Retrofit",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Библиотека для декларативного описания сетевых тапросов. Создает прокси поверх сетевого клиента"
+    },
+    {
+      "name": "Jetpack Compose",
+      "quadrant": "Языки и библиотеки",
+      "ring": "assess",
+      "isNew": false,
+      "description": "Рекомендуемый тулкит для написания нативного UI. Переписали три экрана, изучаем дальше."
+    },
+    {
+      "name": "Timber",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Логирование в файл и LogCat"
+    },
+    {
+      "name": "CameraX",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Jetpack библиотека, созданная для упрощения разработки приложений с камерой. Использовал для сканировани документов и баркодов."
+    },
+    {
+      "name": "Android SDK",
+      "quadrant": "Языки и библиотеки",
+      "ring": "adopt",
+      "isNew": false,
+      "description": "Основное SDK для разработки Android приложений"
+    },
+    {
+      "name": "Xamarin",
+      "quadrant": "Языки и библиотеки",
+      "ring": "hold",
+      "isNew": false,
+      "description": "Фреймворк для кроссплатформенной разработки с использованием языка C#. Применял на двух проектах."
+    },
+    {
+      "name": "Realm",
+      "quadrant": "Языки и библиотеки", 
+      "ring": "hold",
+      "isNew": false,
+      "description": "Альтернавня БД (https://realm.io/) "
+    },
+    {
+      "name": "Exposed",
+      "quadrant": "Языки и библиотеки", 
+      "ring": "adopt",
+      "isNew": false,
+      "description": "ORM для выполнения запросов к БД. Использую в Ktor микросервисах"
+    }
+  ]
+}

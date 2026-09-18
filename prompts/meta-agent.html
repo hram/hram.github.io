@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- ============================================================
+     ЭТАЛОННАЯ СТРАНИЦА ПРОЕКТА  ·  шаблон для остальных 10
+     Поля, которые меняются от проекта к проекту, помечены [[…]]:
+       [[TITLE]]         — имя проекта
+       [[CATEGORY]]      — Метод / Wow / Контроль качества / Платформа / Автоматизация / Эксплуатация
+       [[CAT_COLOR]]     — hex акцента категории (см. --accent ниже)
+       [[ONE_LINER]]     — одна строка сути
+       [[WHAT]]          — «Что это» (2–4 предложения, публично)
+       [[TASK]]          — «Задача, которую решает»
+       [[DEMONSTRATES]]  — список «Что демонстрирует» (ценность для портфолио)
+       [[FACTS]]         — метрики (период, коммиты, код, тесты, статус)
+       [[AI_TRACE]]      — «След ИИ-процесса» (доказательство метода)
+       [[STACK]]         — стек и подход
+       [[TAGS]]          — теги (совпадают с чипами в графе)
+       [[JSONLD]]        — schema.org SoftwareSourceCode + Person
+     ПРАВИЛО: только метод и метрики. Никаких внутренних систем,
+     имён работодателя, чувствительных данных, скриншотов внутрянки.
+============================================================ -->
+
+<title>meta-agent — среда оркестрации ИИ-агентов · Храмов Евгений</title>
+<meta name="description" content="meta-agent — собственная среда оркестрации ИИ-агентов: пространства, пайплайны, 15+ интеграций. Проект, на котором построена разработка остальных систем портфолио.">
+<link rel="canonical" href="https://hram.github.io/projects/meta-agent.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="meta-agent — среда оркестрации ИИ-агентов">
+<meta property="og:description" content="Не «попросил код», а спроектировал модель работы: пространства → сессии → пайплайны, 15+ интеграций как инструменты агента.">
+<meta property="og:url" content="https://hram.github.io/projects/meta-agent.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- [[JSONLD]] machine-readable layer — открыто, честно, для AI и поисковиков -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareSourceCode",
+  "name": "meta-agent",
+  "headline": "Среда оркестрации ИИ-агентов",
+  "abstract": "Собственная среда, в которой ведётся разработка всех остальных проектов: параллельные сессии CLI-агентов, изолированные пространства с контекстом, собственный слой MCP-инструментов и пайплайны.",
+  "programmingLanguage": "JavaScript",
+  "runtimePlatform": "Node.js",
+  "dateCreated": "2026-04-05",
+  "keywords": "оркестрация ИИ-агентов, MCP, пайплайны, мульти-агент, Node.js, agent-native development",
+  "author": {
+    "@type": "Person",
+    "name": "Евгений Храмов",
+    "jobTitle": "Head of Mobile / Android Tech Lead",
+    "url": "https://hram.github.io/",
+    "sameAs": [
+      "https://www.linkedin.com/in/hram0v/",
+      "https://github.com/hram"
+    ]
+  }
+}
+</script>
+
+<style>
+  :root{
+    --void:#080B16; --deep:#0E1428; --panel:#121A33; --line:#22305A;
+    --ice:#7FD4FF; --gold:#FFC96B; --star:#EAF1FB; --mute:#8B99BD; --dim:#5A678C;
+    --accent:var(--gold); /* [[CAT_COLOR]] — Метод = gold */
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; color:var(--star); background:
+      radial-gradient(900px 500px at 80% -5%, rgba(255,201,107,.08), transparent 60%),
+      radial-gradient(800px 600px at 10% 100%, rgba(127,212,255,.07), transparent 55%),
+      linear-gradient(180deg,var(--deep),var(--void) 55%,#05070F);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased; min-height:100vh;
+  }
+  #bg{position:fixed;inset:0;z-index:0}
+  .wrap{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:34px 26px 90px}
+
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:52px}
+  .back{
+    font-family:"IBM Plex Mono",monospace;font-size:12.5px;letter-spacing:.12em;
+    color:var(--mute);text-decoration:none;display:inline-flex;gap:8px;align-items:center;transition:.18s
+  }
+  .back:hover{color:var(--ice)}
+  .who{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+
+  .eyebrow{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 16px;display:flex;align-items:center;gap:9px
+  }
+  .eyebrow i{width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+  h1{
+    font-family:"Space Grotesk",sans-serif;font-weight:700;letter-spacing:-.015em;
+    font-size:clamp(34px,6vw,52px);line-height:1.02;margin:0 0 20px
+  }
+  .lead{font-size:19px;line-height:1.5;color:#C4CEE6;margin:0 0 8px;max-width:60ch}
+
+  h2{
+    font-family:"IBM Plex Mono",monospace;font-weight:500;font-size:12px;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--dim);margin:52px 0 16px;
+    padding-bottom:12px;border-bottom:1px solid var(--line)
+  }
+  p{margin:0 0 16px;color:#CBD4E8}
+  .accent-rule{width:44px;height:3px;background:var(--accent);border-radius:2px;margin:26px 0 0}
+
+  .dem{list-style:none;padding:0;margin:0}
+  .dem li{position:relative;padding-left:26px;margin:0 0 16px;font-size:16.5px;color:var(--star)}
+  .dem li::before{
+    content:"";position:absolute;left:0;top:9px;width:8px;height:8px;border-radius:50%;
+    background:var(--accent);box-shadow:0 0 10px var(--accent)
+  }
+  .dem b{color:#fff;font-weight:600}
+
+  .facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:4px}
+  .facts div{background:rgba(18,26,51,.7);padding:16px 18px}
+  .facts .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+  .facts .v{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:500;color:var(--star)}
+
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tag{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--mute);
+    border:1px solid var(--line);border-radius:999px;padding:5px 13px}
+
+  .stack{font-family:"IBM Plex Mono",monospace;font-size:13.5px;color:var(--mute);line-height:1.9}
+  .stack b{color:var(--star);font-weight:500}
+
+  .relevance{
+    margin-top:44px;border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:12px;background:rgba(255,201,107,.05);padding:22px 24px
+  }
+  .relevance .h{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:17px;margin:0 0 8px;color:#fff}
+  .relevance p{margin:0;color:#C4CEE6;font-size:15px}
+
+  .foot{margin-top:64px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;
+    padding-top:26px;border-top:1px solid var(--line)}
+  .foot a{
+    font-family:"IBM Plex Mono",monospace;font-size:13px;text-decoration:none;
+    padding:10px 16px;border-radius:9px;transition:.18s
+  }
+  .foot .primary{background:var(--accent);color:#241a06;font-weight:500}
+  .foot .primary:hover{filter:brightness(1.08)}
+  .foot .ghost{border:1px solid var(--line);color:var(--mute)}
+  .foot .ghost:hover{border-color:var(--ice);color:var(--star)}
+  .disclaim{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--dim);margin-left:auto}
+
+  @media (max-width:560px){
+    .facts{grid-template-columns:1fr 1fr}
+    .disclaim{width:100%;margin:10px 0 0}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<main class="wrap">
+  <div class="nav">
+    <a class="back" href="../project-galaxy.html">← Созвездие проектов</a>
+    <span class="who">Храмов Евгений</span>
+  </div>
+
+  <!-- [[CATEGORY]] -->
+  <p class="eyebrow"><i></i>Метод / ядро</p>
+  <!-- [[TITLE]] -->
+  <h1>meta-agent</h1>
+  <!-- [[ONE_LINER]] -->
+  <p class="lead">Собственная среда оркестрации ИИ-агентов, в которой ведётся разработка всех остальных проектов портфолио.</p>
+  <div class="accent-rule"></div>
+
+  <!-- [[WHAT]] -->
+  <h2>Что это</h2>
+  <p>Локальное веб-приложение (браузер и Electron-десктоп), через которое запускаются и управляются параллельные сессии CLI-агентов. Каждый агент живёт в отдельной PTY-сессии, вывод стримится в браузер по WebSocket, сессий может быть много одновременно.</p>
+  <p>Ключевая абстракция — <b>пространство</b>: у него свой список проектов, контекстные файлы, артефакты и набор подключённых инструментов. У каждого пространства есть агент-координатор и проектные сессии. Это превращает одинокий терминал без памяти в управляемую среду разработки.</p>
+
+  <!-- [[TASK]] -->
+  <h2>Задача, которую решает</h2>
+  <p>Работа с CLI-агентами по умолчанию — это терминал, который не знает контекста вокруг. Здесь закрыты четыре проблемы: агент не знает проект — решено контекстными файлами пространства и собственными инструментами; нельзя вести несколько задач сразу — решено мульти-PTY и списком сессий; многошаговые процессы разваливаются — решено пайплайнами со статусами; рутина повторяется — решено шаблонами пайплайнов и планировщиком.</p>
+
+  <!-- [[DEMONSTRATES]] — ключевой раздел: ценность для роли -->
+  <h2>Что демонстрирует</h2>
+  <ul class="dem">
+    <li><b>Системное мышление:</b> спроектирована модель работы (пространства → проекты → сессии → пайплайны), а не разовый запрос к агенту.</li>
+    <li><b>Понимание, что решает качество:</b> результат агента определяется качеством контекста и инструментов — и это построено, а не оставлено на удачу.</li>
+    <li><b>Интеграционная зрелость:</b> 15+ внешних систем (трекеры задач и репозитории, CI/CD, дизайн-инструменты, мониторинг и краш-аналитика, документация, почта) подключены как инструменты агента.</li>
+    <li><b>Превращение кейса в процесс:</b> разрозненные запуски ИИ стали управляемым, повторяемым конвейером — ровно то, что отличает «единичный успех» от «стандарта команды».</li>
+  </ul>
+
+  <!-- [[FACTS]] -->
+  <h2>Факты</h2>
+  <div class="facts">
+    <div><div class="k">Разработка</div><div class="v">4.5 мес · активно</div></div>
+    <div><div class="k">Коммитов</div><div class="v">82</div></div>
+    <div><div class="k">Объём кода</div><div class="v">~47 300 строк JS</div></div>
+    <div><div class="k">Файлов</div><div class="v">79</div></div>
+    <div><div class="k">Тесты</div><div class="v">31 набор</div></div>
+    <div><div class="k">Интеграций</div><div class="v">15+ систем</div></div>
+  </div>
+
+  <!-- [[STACK]] -->
+  <h2>Стек и подход</h2>
+  <p class="stack">
+    <b>Runtime:</b> Node.js, Express 5, WebSocket (ws), node-pty, Electron.<br>
+    <b>Инструменты агента:</b> собственный MCP-сервер на @modelcontextprotocol/sdk.<br>
+    <b>Процессы:</b> пайплайны со статусами и очередью, шаблоны, снапшоты, релиз-менеджер, планировщик, автоматический аудит пространств.
+  </p>
+
+  <!-- [[AI_TRACE]] — доказательство метода в репозитории -->
+  <h2>След ИИ-процесса</h2>
+  <p>Разработка сама велась как управляемый процесс: 23 файла постановок (пошаговые ТЗ, RFC на эволюцию пайплайнов, HTML-макеты UI до реализации), отдельные контекстные файлы под разных агентов, часть коммитов с трейлером соавторства. Репозиторий читается как аудиторский след метода, а не как «сгенерированный код».</p>
+
+  <!-- Почему релевантно роли -->
+  <div class="relevance">
+    <p class="h">Почему это отвечает роли «превратить AI-кейсы в стандарт»</p>
+    <p>meta-agent — это буквально инфраструктура стандартизации: не отдельный удачный проект, а среда, которая делает AI-разработку повторяемой, наблюдаемой и управляемой. Инструмент, на котором построены остальные десять систем портфолио.</p>
+  </div>
+
+  <div class="foot">
+    <!-- репозиторий приватный → ссылку опускаем; для публичных проектов добавить class="primary" href=repo -->
+    <a class="ghost" href="../project-galaxy.html">← Ко всем проектам</a>
+    <a class="primary" href="../docs/ai-engineering-lead.html">Портфолио под роль →</a>
+    <span class="disclaim">публичная витрина · метод и метрики</span>
+  </div>
+</main>
+
+<script>
+// декоративный статичный звёздный фон (контент не зависит от JS — страница краулабельна)
+(function(){
+  var c=document.getElementById('bg'),x=c.getContext('2d'),dpr=devicePixelRatio||1;
+  function paint(){
+    c.width=innerWidth*dpr;c.height=innerHeight*dpr;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';
+    var n=Math.min(160,Math.floor(innerWidth*innerHeight/8000));
+    for(var i=0;i<n;i++){var r=(Math.random()*1.1+.2)*dpr,a=(Math.random()*.4+.15);
+      x.beginPath();x.arc(Math.random()*c.width,Math.random()*c.height,r,0,7);
+      x.fillStyle='rgba(200,220,255,'+a.toFixed(2)+')';x.fill();}
+  }
+  paint();addEventListener('resize',paint);
+})();
+</script>
+</body>
+</html>
