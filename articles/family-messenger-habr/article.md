@@ -2,6 +2,7 @@
 layout: default
 title: Статья про family-messenger которой не случилось
 description: Сохранённая версия статьи о Family Messenger, которую не приняла модерация Habr.
+date: 2026-09-17
 permalink: /articles/family-messenger-habr/
 nav_exclude: true
 ---

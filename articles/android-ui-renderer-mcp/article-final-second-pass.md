@@ -2,6 +2,7 @@
 layout: default
 title: Я дал coding agent глаза для Android UI — но картинки оказалось мало
 description: Почему coding agent недостаточно дать screenshot Android UI и как View tree сделал результат проверяемым.
+date: 2026-09-15
 permalink: /articles/android-ui-renderer-mcp/
 nav_exclude: true
 ---

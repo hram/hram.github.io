@@ -2,6 +2,7 @@
 layout: default
 title: Я отдал разработку мессенджера двум AI
 description: Как ChatGPT и Codex помогли собрать self-hosted KMP-мессенджер, почему продукт прожил неделю и почему первую статью о нём не приняла модерация Habr.
+date: 2026-09-17
 permalink: /articles/family-messenger/
 nav_exclude: true
 ---
