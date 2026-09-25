@@ -26,3 +26,12 @@ Why a screenshot of an Android interface was only the first step for a coding ag
 How we investigated a rotation mismatch between Preview and ImageAnalysis on an Android tablet. And why we stopped the first, seemingly workable fix that relied on a delay.
 
 [Read the article]({{ '/en/articles/camerax-agent/' | relative_url }}){: .btn .btn-blue }
+
+## From a Paper Map to a Problem Split
+
+How I combined a scan of an orienteering map, a GPS track, and an official race
+protocol to find recurring mistakes on specific legs of a course.
+
+[Read the article]({{ '/en/articles/orienteering/' | relative_url }}){: .btn .btn-blue }
+
+[The orienteering project](https://github.com/hram/orienteering)

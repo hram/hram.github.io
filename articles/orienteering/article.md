@@ -4,6 +4,7 @@ title: От бумажной карты до проблемного сплита
 description: Как личный портал сопоставляет карту, GPX-трек и протокол соревнования, чтобы разбирать ошибки на конкретных этапах дистанции.
 date: 2026-09-17
 permalink: /articles/orienteering/
+translation_key: orienteering
 nav_exclude: true
 ---
 
