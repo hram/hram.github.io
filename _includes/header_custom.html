@@ -1,0 +1,19 @@
+{%- comment -%} Переключатель языка: показываем только у страниц, у которых есть перевод (общий translation_key) {%- endcomment -%}
+{%- if page.translation_key -%}
+{%- assign i18n_group = site.pages | where: "translation_key", page.translation_key -%}
+{%- if i18n_group.size > 1 -%}
+<nav aria-label="Language" class="aux-nav">
+  <ul class="aux-nav-list">
+    {%- for p in i18n_group %}
+    <li class="aux-nav-list-item">
+      {%- if p.url == page.url -%}
+      <span class="site-button" aria-current="true"><strong>{{ p.lang | upcase }}</strong></span>
+      {%- else -%}
+      <a href="{{ p.url | relative_url }}" class="site-button" hreflang="{{ p.lang }}" lang="{{ p.lang }}">{{ p.lang | upcase }}</a>
+      {%- endif -%}
+    </li>
+    {%- endfor %}
+  </ul>
+</nav>
+{%- endif -%}
+{%- endif -%}

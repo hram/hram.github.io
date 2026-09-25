@@ -8,6 +8,15 @@ url: https://hram.github.io
 plugins:
   - jekyll-sitemap
 
+# язык по умолчанию — русский; английские страницы задают lang: en и locale: en_US в front matter
+lang: ru
+defaults:
+  - scope:
+      path: ""
+    values:
+      lang: ru
+      locale: ru_RU
+
 # исходники постановок и эталонов — не для публичной витрины
 exclude:
   - prompts/

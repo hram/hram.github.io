@@ -8,6 +8,20 @@
 <meta name="google-site-verification" content="tvHMum_J-7nmWhEAV5DncD4s_WvZ523S_LUmKjclOfo">
 <meta name="yandex-verification" content="a6a977c75a079aba">
 <script src="{{ '/assets/analytics.js' | relative_url }}" defer></script>
+{%- comment -%} hreflang: связываем языковые версии одной статьи по translation_key; без пары ничего не выводим {%- endcomment -%}
+{%- if page.translation_key -%}
+{%- assign i18n_group = site.pages | where: "translation_key", page.translation_key -%}
+{%- if i18n_group.size > 1 -%}
+{%- for p in i18n_group %}
+<link rel="alternate" hreflang="{{ p.lang }}" href="{{ p.url | absolute_url }}">
+{%- endfor %}
+{%- assign i18n_default = i18n_group | where: "lang", "ru" | first %}
+<link rel="alternate" hreflang="x-default" href="{{ i18n_default.url | absolute_url }}">
+{%- endif -%}
+{%- endif %}
+{%- if page.noindex %}
+<meta name="robots" content="noindex">
+{%- endif %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
