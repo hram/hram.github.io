@@ -4,8 +4,9 @@ title: Articles
 description: Articles by Evgeny Khramov — stories about mobile development, engineering decisions and working with coding agents.
 lang: en
 locale: en_US
+translation_key: articles
 permalink: /en/articles/
-nav_exclude: true
+nav_order: 1
 ---
 
 # Articles

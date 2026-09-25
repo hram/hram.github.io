@@ -50,6 +50,7 @@ nav_external_links:
     hide_icon: true # внутренняя страница сайта, а не внешний ресурс
     opens_in_new_tab: false
   - title: Мой Tech Radar
+    title_en: My Tech Radar # на английских страницах показываются только ссылки с title_en
     url: https://hram.github.io/radar/index.html
     hide_icon: false # set to true to hide the external link icon - defaults to false
     opens_in_new_tab: true # set to true to open this link in a new tab - defaults to false
