@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Articles
-description: Articles by Evgeny Khramov — stories about mobile development, engineering decisions and working with coding agents.
+description: "Real-world case studies on building software with coding agents: what I delegate, where agents fail, how I verify the work. Android and beyond."
 lang: en
 locale: en_US
 translation_key: articles
@@ -11,7 +11,7 @@ nav_order: 1
 
 # Articles
 
-Stories about mobile development, engineering decisions and working with coding agents.
+Real-world engineering case studies about building software with coding agents: what I delegate, where agents fail, how I verify their work, and what remains the engineer's responsibility.
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
