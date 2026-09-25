@@ -6,12 +6,16 @@ lang: en
 locale: en_US
 permalink: /en/articles/
 nav_exclude: true
-noindex: true # пока нет ни одного перевода; убрать вместе с sitemap: false, когда появится первая статья
-sitemap: false
 ---
 
 # Articles
 
 Stories about mobile development, engineering decisions and working with coding agents.
 
-English translations are coming soon. The original articles are available in Russian: [Статьи]({{ '/articles/' | relative_url }}).
+Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
+
+## A Coding Agent Almost Fixed My CameraX Bug with a Delay. Why I Stopped It
+
+How we investigated a rotation mismatch between Preview and ImageAnalysis on an Android tablet. And why we stopped the first, seemingly workable fix that relied on a delay.
+
+[Read the article]({{ '/en/articles/camerax-agent/' | relative_url }}){: .btn .btn-blue }

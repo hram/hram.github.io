@@ -23,6 +23,9 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - radar/error.html # заглушка «PAGE NOT FOUND» из сборки радара — не страница сайта
+  - articles/*/outline.md # рабочие черновики статей (план и исследование) — не для публикации
+  - articles/*/research.md
+  - articles/android-ui-renderer-mcp/article.md # сырой черновик без front matter; публикуется article-final-second-pass.md
 
 callouts_level: quiet # or loud
 callouts:

@@ -4,6 +4,7 @@ title: «Coding agent» почти починил мне CameraX задержк�
 description: Как мы с coding agent расследовали рассинхронизацию Preview и ImageAnalysis при повороте Android-планшета.
 date: 2026-09-15
 permalink: /articles/camerax-agent/
+translation_key: camerax-agent
 nav_exclude: true
 ---
 
