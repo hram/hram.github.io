@@ -4,6 +4,7 @@ title: "Я не умел делать A/B-тесты. AI-агент постро
 description: "Как AI-агент помог спроектировать аналитику A/B/C-эксперимента нового Android-сканера ценников, связать Firebase с BigQuery и разбирать реальные сбои."
 date: 2026-09-24
 permalink: /articles/price-tag-scanner-ab/
+translation_key: price-tag-scanner-ab
 nav_exclude: true
 ---
 # Я не умел делать A/B-тесты. AI-агент построил аналитику и теперь сам её анализирует

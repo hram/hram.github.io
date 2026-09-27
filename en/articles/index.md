@@ -35,3 +35,9 @@ protocol to find recurring mistakes on specific legs of a course.
 [Read the article]({{ '/en/articles/orienteering/' | relative_url }}){: .btn .btn-blue }
 
 [The orienteering project](https://github.com/hram/orienteering)
+
+## What a Coding Agent Taught Me About A/B Test Telemetry
+
+How a coding agent designed the analytics for an A/B/C experiment with a new Android price-tag scanner: a scan-session event model, the Firebase to BigQuery export, and a one-row-per-session layer it queries for me.
+
+[Read the article]({{ '/en/articles/price-tag-scanner-ab/' | relative_url }}){: .btn .btn-blue }
