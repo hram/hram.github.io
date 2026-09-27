@@ -21,6 +21,14 @@ How a coding agent designed the analytics for an A/B/C experiment with a new And
 
 [Read the article]({{ '/en/articles/price-tag-scanner-ab/' | relative_url }}){: .btn .btn-blue }
 
+## One Master Prompt, Five Steps: How a Coding Agent Built a 4-Platform Kotlin App
+
+The real prompts behind a self-hosted Kotlin Multiplatform messenger: an architecture-contract master prompt and five sequential steps, from the shared contract to a self-review. All of them are public.
+
+[Read the article]({{ '/en/articles/family-messenger/' | relative_url }}){: .btn .btn-blue }
+
+[The family-messenger project](https://github.com/hram/family-messenger)
+
 ## From a Paper Map to a Problem Split
 
 How I combined a scan of an orienteering map, a GPS track, and an official race
