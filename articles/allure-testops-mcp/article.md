@@ -4,6 +4,7 @@ title: "Я ускорил разработку AI-агентами. Узким �
 description: "Зачем AI-агенту MCP для Allure TestOps, если человек может просто открыть браузер: как агент переносит смысл между кодом, TMS и MockServer, а человек перестаёт быть посредником."
 date: 2026-09-21
 permalink: /articles/allure-testops-mcp/
+translation_key: allure-testops-mcp
 nav_exclude: true
 ---
 

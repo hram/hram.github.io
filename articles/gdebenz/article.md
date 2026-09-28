@@ -4,6 +4,7 @@ title: "Мне не нужен был ещё один мониторинг АЗ�
 description: "Как личный мониторинг АЗС превратился в помощника, который решает «ехать за АИ-95 или ждать» и пишет в Telegram только тогда, когда действительно пора ехать."
 date: 2026-09-21
 permalink: /articles/gdebenz/
+translation_key: gdebenz
 nav_exclude: true
 ---
 

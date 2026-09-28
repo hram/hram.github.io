@@ -4,6 +4,7 @@ title: Как я сделал AI персональным тренером, ко
 description: Как личный портал связал данные Mi Fitness с AI-тренером и заменил ручную передачу скриншотов постоянным контекстом.
 date: 2026-09-16
 permalink: /articles/running-portal/
+translation_key: running-portal
 nav_exclude: true
 ---
 

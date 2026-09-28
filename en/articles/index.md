@@ -49,3 +49,31 @@ Why a screenshot of an Android interface was only the first step for a coding ag
 How we investigated a rotation mismatch between Preview and ImageAnalysis on an Android tablet. And why we stopped the first, seemingly workable fix that relied on a delay.
 
 [Read the article]({{ '/en/articles/camerax-agent/' | relative_url }}){: .btn .btn-blue }
+
+## I Sped Up Development with AI Agents. Testing Became the Bottleneck
+
+Why an AI agent needs an MCP for Allure TestOps when a human can just open a browser — and how the agent started carrying meaning between code, the TMS, and MockServer.
+
+[Read the article]({{ '/en/articles/allure-testops-mcp/' | relative_url }}){: .btn .btn-blue }
+
+[The allure-testops-mcp project](https://github.com/hram/allure-testops-mcp)
+
+## I Didn't Need Another Gas Station Tracker
+
+How a personal family portal stopped being a fuel monitor and became an assistant that decides "go for 95-octane or wait" — and stays quiet until it matters.
+
+[Read the article]({{ '/en/articles/gdebenz/' | relative_url }}){: .btn .btn-blue }
+
+## I Wanted AI to Improve My Resume
+
+Why "update my resume with AI" turned into a private fact base about my own career — and how the agent became more useful once it stopped writing text and started asking questions about metrics.
+
+[Read the article]({{ '/en/articles/career-portal/' | relative_url }}){: .btn .btn-blue }
+
+## How I Turned AI into a Personal Coach
+
+Why screenshots from Mi Fitness stopped being enough after a run — and how a personal portal gave an AI coach the training history, recovery metrics, and how-I-feel context it needed.
+
+[Read the article]({{ '/en/articles/running-portal/' | relative_url }}){: .btn .btn-blue }
+
+[The running-portal project](https://github.com/hram/running-portal)
