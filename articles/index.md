@@ -13,6 +13,16 @@ permalink: /articles/
 Исходники статей, факты и хронология расследований хранятся рядом с каждой
 публикацией в репозитории.
 
+## Одного layout оказалось мало
+
+Как coding agent получил составной Android-экран — Activity с тулбаром, Fragment,
+строки RecyclerView и loading overlay — из настоящего XML с явно заданными данными,
+без запуска приложения, и зачем рядом с каждым рендером лежит рецепт для повтора.
+
+[Читать статью]({{ '/articles/android-ui-renderer-composed-screens/' | relative_url }}){: .btn .btn-blue }
+
+[Проект android-ui-renderer-mcp](https://github.com/hram/android-ui-renderer-mcp)
+
 ## Я не умел делать A/B-тесты
 
 Как AI-агент помог спроектировать аналитику A/B/C-эксперимента нового Android-сканера
