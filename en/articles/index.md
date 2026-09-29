@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## One Layout Wasn't Enough: Rendering a Whole Android Screen Without Running the App
+
+How a coding agent got a composed Android screen — an Activity with a toolbar, a Fragment, RecyclerView rows and a loading overlay — rendered from real XML with explicit data, plus a replay recipe for every render.
+
+[Read the article]({{ '/en/articles/android-ui-renderer-composed-screens/' | relative_url }}){: .btn .btn-blue }
+
+[The android-ui-renderer-mcp project](https://github.com/hram/android-ui-renderer-mcp)
+
 ## What a Coding Agent Taught Me About A/B Test Telemetry
 
 How a coding agent designed the analytics for an A/B/C experiment with a new Android price-tag scanner: a scan-session event model, the Firebase to BigQuery export, and a one-row-per-session layer it queries for me.
