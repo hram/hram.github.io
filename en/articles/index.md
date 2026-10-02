@@ -15,6 +15,16 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## The Feature I Wouldn't Have Touched Myself
+
+How a coding agent added Jetpack Compose to Android UI Renderer MCP: it parsed
+Kotlin signatures itself, built a Compose probe and a semantics tree, while I
+set the boundaries of the solution and caught errors a single PNG couldn't show.
+
+[Read the article]({{ '/en/articles/android-ui-renderer-compose/' | relative_url }}){: .btn .btn-blue }
+
+[The android-ui-renderer-mcp project](https://github.com/hram/android-ui-renderer-mcp)
+
 ## One Layout Wasn't Enough: Rendering a Whole Android Screen Without Running the App
 
 How a coding agent got a composed Android screen — an Activity with a toolbar, a Fragment, RecyclerView rows and a loading overlay — rendered from real XML with explicit data, plus a replay recipe for every render.
