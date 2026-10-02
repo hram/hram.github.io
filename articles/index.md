@@ -13,6 +13,16 @@ permalink: /articles/
 Исходники статей, факты и хронология расследований хранятся рядом с каждой
 публикацией в репозитории.
 
+## Фича, за которую я бы сам не взялся
+
+Как coding agent добавил Jetpack Compose в Android UI Renderer MCP: сам
+разобрал Kotlin-сигнатуры, собрал Compose probe и semantics tree, а я задавал
+границы решения и поймал ошибки, которые не видны по одному PNG.
+
+[Читать статью]({{ '/articles/android-ui-renderer-compose/' | relative_url }}){: .btn .btn-blue }
+
+[Проект android-ui-renderer-mcp](https://github.com/hram/android-ui-renderer-mcp)
+
 ## Одного layout оказалось мало
 
 Как coding agent получил составной Android-экран — Activity с тулбаром, Fragment,
