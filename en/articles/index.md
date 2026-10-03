@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## I Wanted to Read Three Columns of an Invoice
+
+OCR turned out to be the easy part: PaddleOCR running out of memory on a real
+phone photo, aligning by the table grid instead of the sheet of paper (a hint
+from an old Sudoku project), and a tight crop instead of a new model.
+
+[Read the article]({{ '/en/articles/paper-ledger/' | relative_url }}){: .btn .btn-blue }
+
 ## The Feature I Wouldn't Have Touched Myself
 
 How a coding agent added Jetpack Compose to Android UI Renderer MCP: it parsed
