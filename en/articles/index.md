@@ -15,6 +15,15 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## GitFlow as Cement Between Planning and Development
+
+The GitFlow variant I have used for more than ten years: every release has its
+own chain of `stage/version` branches, a new version starts from the current
+stage of the newest one, and fixes move forward. Branches mirror the delivery
+plan, so release scope is not reassembled with cherry-pick and revert.
+
+[Read the article]({{ '/en/articles/hram-git-flow-base/' | relative_url }}){: .btn .btn-blue }
+
 ## I Wanted to Read Three Columns of an Invoice
 
 OCR turned out to be the easy part: PaddleOCR running out of memory on a real
