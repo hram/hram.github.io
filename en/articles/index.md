@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## My Git Flow, Part 2: I Got Tired of Policing the Process and Handed It to GitLab
+
+How a versioned `stage/version` branch name became the basis for merge request
+checks, build and environment selection, delivery, release notes,
+notifications and Jira statuses, and what still stays with people.
+
+[Read the article]({{ '/en/articles/hram-git-flow-ci/' | relative_url }}){: .btn .btn-blue }
+
 ## GitFlow as Cement Between Planning and Development
 
 The GitFlow variant I have used for more than ten years: every release has its
