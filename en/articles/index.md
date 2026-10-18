@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## My Git Flow, Part 3: I Stopped Painting Cells in Confluence, the Release Stage Is Now Computed by a Portal and an MCP
+
+How a release stage is computed from merged merge requests: a portal instead of
+a Confluence table, and an MCP tool that tells a coding agent which branch to
+start a task from. And where this algorithm can be wrong.
+
+[Read the article]({{ '/en/articles/hram-git-flow-ai/' | relative_url }}){: .btn .btn-blue }
+
 ## My Git Flow, Part 2: I Got Tired of Policing the Process and Handed It to GitLab
 
 How a versioned `stage/version` branch name became the basis for merge request
