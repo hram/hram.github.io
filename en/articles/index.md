@@ -15,6 +15,12 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## Don't write the prompt. Get interviewed.
+
+I asked Codex to interview me instead of writing a spec: an hour of questions about a phone-based document camera, then the agent built the app and wired it into PaperLedger.
+
+[Read the article]({{ '/en/articles/mobile-ledger/' | relative_url }}){: .btn .btn-blue }
+
 ## My Git Flow, Part 3: I Stopped Painting Cells in Confluence, the Release Stage Is Now Computed by a Portal and an MCP
 
 How a release stage is computed from merged merge requests: a portal instead of
