@@ -21,6 +21,8 @@ permalink: /articles/
 
 [Читать статью]({{ '/articles/freecad-mcp/' | relative_url }}){: .btn .btn-blue }
 
+[Проект freecad-mcp](https://github.com/hram/freecad-mcp)
+
 ## Не пиши промпт. Пройди интервью.
 
 Как я попросил Codex провести интервью вместо технического задания: час вопросов про документ-камеру из Android-телефона, а затем агент сам написал приложение и связал его с PaperLedger.
