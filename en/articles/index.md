@@ -15,6 +15,17 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## The agent could move parts but couldn't assemble a mechanism
+
+How I extended FreeCAD MCP after an hour and a half of assembling through chat:
+Claude and Codex each assembled the pan-tilt on their own, yet the geometry
+checks missed the swapped side plates. An analysis based on logs, models and
+measurements.
+
+[Read the article]({{ '/en/articles/freecad-mcp/' | relative_url }}){: .btn .btn-blue }
+
+[freecad-mcp project](https://github.com/hram/freecad-mcp)
+
 ## Don't write the prompt. Get interviewed.
 
 I asked Codex to interview me instead of writing a spec: an hour of questions about a phone-based document camera, then the agent built the app and wired it into PaperLedger.
