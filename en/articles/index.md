@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## From STL to BREP: How an AI Agent Learned to Recover Geometry, Not Just Stitch Triangles
+
+The `convert_mesh_to_brep` tool for FreeCAD MCP recovers planes and cylinders from STL instead of leaving faceted surfaces: 2884 triangles → 31 faces. Results on six parts, the limits, and a request for an STL that breaks it.
+
+[Read the article]({{ '/en/articles/freecad-mcp-mesh-to-brep/' | relative_url }}){: .btn .btn-blue }
+
+[freecad-mcp project](https://github.com/hram/freecad-mcp)
+
 ## When an AI Agent Stopped Just Writing Code and Started Testing the Whole System
 
 ESP32, an Android tablet and a Kotlin BFF became a single test bench:
