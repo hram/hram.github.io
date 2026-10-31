@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## When an AI Agent Started Testing the Entire System
+
+ESP32, an Android tablet and a Kotlin BFF became a single test bench:
+controlled Bluetooth failures, recording recovery and uploads to the server.
+Long runs, discovered bugs and the limits of the results. Available in Russian.
+
+[Read the article (Russian)]({{ '/articles/esp32-android-audio-badge/' | relative_url }}){: .btn .btn-blue }
+
 ## The agent could move parts but couldn't assemble a mechanism
 
 How I extended FreeCAD MCP after an hour and a half of assembling through chat:
