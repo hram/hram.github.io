@@ -18,6 +18,7 @@ permalink: /articles/
 Как Codex собрал вторую CAD-версию моторизованной подставки Androsaur в SolidCraft и проверил её по исходной модели в build123d.
 
 [Читать статью]({{ '/articles/androsaur-stand-solidcraft/' | relative_url }}){: .btn .btn-blue }
+[Read in English]({{ '/en/articles/androsaur-stand-solidcraft/' | relative_url }}){: .btn }
 
 [Проект Androsaur Stand](https://github.com/androsaurs/androsaur-stand)
 
