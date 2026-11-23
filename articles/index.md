@@ -18,7 +18,6 @@ permalink: /articles/
 Как я использую форк Remotion MCP App, чтобы агент сам находил и исправлял ошибки по кадрам, а я смотрел уже проверенный MP4.
 
 [Читать статью]({{ '/articles/remotion-mcp-app/' | relative_url }}){: .btn .btn-blue }
-[Read in English]({{ '/en/articles/remotion-mcp-app/' | relative_url }}){: .btn }
 
 [Форк Remotion MCP App](https://github.com/hram/remotion-mcp-app)
 
@@ -27,7 +26,6 @@ permalink: /articles/
 Как Codex собрал вторую CAD-версию моторизованной подставки Androsaur в SolidCraft и проверил её по исходной модели в build123d.
 
 [Читать статью]({{ '/articles/androsaur-stand-solidcraft/' | relative_url }}){: .btn .btn-blue }
-[Read in English]({{ '/en/articles/androsaur-stand-solidcraft/' | relative_url }}){: .btn }
 
 [Проект Androsaur Stand](https://github.com/androsaurs/androsaur-stand)
 
