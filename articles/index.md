@@ -13,6 +13,15 @@ permalink: /articles/
 Исходники статей, факты и хронология расследований хранятся рядом с каждой
 публикацией в репозитории.
 
+## Как я перестал проверять каждый черновик ролика в Remotion
+
+Как я использую форк Remotion MCP App, чтобы агент сам находил и исправлял ошибки по кадрам, а я смотрел уже проверенный MP4.
+
+[Читать статью]({{ '/articles/remotion-mcp-app/' | relative_url }}){: .btn .btn-blue }
+[Read in English]({{ '/en/articles/remotion-mcp-app/' | relative_url }}){: .btn }
+
+[Форк Remotion MCP App](https://github.com/hram/remotion-mcp-app)
+
 ## Хотел попробовать SolidCraft. В итоге перенёс свой CAD-проект за девять минут
 
 Как Codex собрал вторую CAD-версию моторизованной подставки Androsaur в SolidCraft и проверил её по исходной модели в build123d.

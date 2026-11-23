@@ -15,6 +15,14 @@ Real-world engineering case studies about building software with coding agents: 
 
 Original articles in Russian: [Статьи]({{ '/articles/' | relative_url }}).
 
+## How I stopped reviewing every draft of a Remotion video
+
+How I use my Remotion MCP App fork to let the agent spot and fix visual issues frame by frame before handing me the MP4 it has reviewed.
+
+[Read the article]({{ '/en/articles/remotion-mcp-app/' | relative_url }}){: .btn .btn-blue }
+
+[Remotion MCP App fork](https://github.com/hram/remotion-mcp-app)
+
 ## I wanted to try SolidCraft. I ended up porting my CAD project in nine minutes
 
 How Codex built a second CAD version of the Androsaur motorized phone stand in SolidCraft and checked it against the original build123d model.
